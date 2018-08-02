@@ -10,20 +10,24 @@ body {
   color: #666;
 }
 
+.column {
+  display: inline-block;
+
+  &.active {
+    background: #FFF;
+  }
+}
+
 .cell {
   $size: 3rem;
-  // display: inline-block;
   width: $size;
   height: $size;
   background: #666;
   margin: 0.5rem;
   border-radius: 50%;
+
+  &.active {
+    background: #8fb439;
+  }
 }
 
-.column {
-  display: inline-block;
-}
-
-.active {
-  background: #8fb439;
-}

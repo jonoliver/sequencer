@@ -13,17 +13,17 @@ const Cell = ({ active, x, y }) =>
     }
   </Consumer>
 
-const Column = ({ cells, y }) =>
-  <div className='column'>
+const Column = ({ cells, activeColumn, y }) =>
+  <div className={`column ${activeColumn === y ? 'active' : ''}`}>
     {
       cells.map((active, x) => <Cell key={x} {...{active, x, y}} />)
     }
   </div>
 
-const Grid = ({ columns }) => 
+const Grid = ({ columns, activeColumn }) => 
   <div className="grid">
     {
-      columns.map((cells, y) => <Column key={y} {...{cells, y}} />)
+      columns.map((cells, y) => <Column key={y} {...{cells, activeColumn, y}} />)
     }  
   </div>
 
@@ -41,10 +41,24 @@ class App extends Component {
     this.state = {
       score: columns,
       dragging: false,
+      activeBeat: 0,
     }
+    this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
+  }
+
+  componentWillMount() {
+    setInterval(this.tick, 250);
+  }
+
+  tick(){
+    this.setState(({ activeBeat, score }) => {
+      return { 
+        activeBeat: activeBeat < score.length - 1 ? activeBeat + 1 :0,
+      }
+    });
   }
 
   toggle(x, y, checkDrag) {
@@ -64,14 +78,23 @@ class App extends Component {
   }
   
   render() {
-    const { toggle, onMouseDown, onMouseUp } = this;
+    const { 
+      toggle, 
+      onMouseDown, 
+      onMouseUp, 
+    } = this;
+
+    const {
+      activeBeat: activeColumn 
+    } = this.state;
+
     return (
       <Provider value={{ toggle }}>
         <div className="container" {...{ 
           onMouseDown,
           onMouseUp,
         }}>
-          <Grid {...{ columns }} />
+          <Grid {...{ columns, activeColumn }} />
         </div>
       </Provider>
     );
