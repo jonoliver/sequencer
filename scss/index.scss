@@ -1,6 +1,29 @@
+html, body, #app, .container {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   font-size: 1.8em;
   background: #eee;
   color: #666;
+}
+
+.cell {
+  $size: 3rem;
+  // display: inline-block;
+  width: $size;
+  height: $size;
+  background: #666;
+  margin: 0.5rem;
+  border-radius: 50%;
+}
+
+.column {
+  display: inline-block;
+}
+
+.active {
+  background: #8fb439;
 }

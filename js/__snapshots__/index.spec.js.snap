@@ -1,7 +1,130 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`displays the message (snapshot) 1`] = `
-<p>
-  Hello World!
-</p>
+<div
+  className="container"
+  onMouseDown={[Function]}
+  onMouseUp={[Function]}
+>
+  <div
+    className="grid"
+  >
+    <div
+      className="column"
+    >
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+    </div>
+    <div
+      className="column"
+    >
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+    </div>
+    <div
+      className="column"
+    >
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+    </div>
+    <div
+      className="column"
+    >
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell active"
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+      <div
+        className="cell "
+        onClick={[Function]}
+        onMouseEnter={[Function]}
+      />
+    </div>
+  </div>
+</div>
 `;
