@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { play } from "./instrument";
 
 const { Provider, Consumer } = React.createContext();
 
@@ -27,19 +28,12 @@ const Grid = ({ columns, activeColumn }) =>
     }  
   </div>
 
-
-const columns = [
-  [1, 0, 0, 1, 0],
-  [0, 1, 0, 1, 0],
-  [1, 0, 0, 0, 1],
-  [1, 1, 0, 1, 0],
-];
-
 class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      score: columns,
+      score: props.score,
+      scale: props.scale,
       dragging: false,
       activeBeat: 0,
     }
@@ -50,13 +44,18 @@ class App extends Component {
   }
 
   componentWillMount() {
+    const { scale, score } = this.state;
     setInterval(this.tick, 250);
   }
 
   tick(){
-    this.setState(({ activeBeat, score }) => {
+    this.setState(({ activeBeat, score, scale }) => {
+      const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
+      const notes = scale.filter((x, i) => score[newBeat][i]);
+      play(notes);
+
       return { 
-        activeBeat: activeBeat < score.length - 1 ? activeBeat + 1 :0,
+        activeBeat: newBeat,
       }
     });
   }
@@ -85,7 +84,8 @@ class App extends Component {
     } = this;
 
     const {
-      activeBeat: activeColumn 
+      score: columns,
+      activeBeat: activeColumn,
     } = this.state;
 
     return (
