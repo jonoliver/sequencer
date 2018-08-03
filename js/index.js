@@ -28,6 +28,13 @@ const Grid = ({ columns, activeColumn }) =>
     }  
   </div>
 
+const Slider = ({ name, min, max, updateSetting, multiplier }) =>
+  <label htmlFor={name} className="slider">
+    <input type="range" min={min} max={max} name={name}
+      onChange={ (e) => updateSetting(name, e.target.value * multiplier) } />
+    {name}
+  </label>
+
 class App extends Component {
   constructor(props){
     super(props);
@@ -36,9 +43,21 @@ class App extends Component {
       scale: props.scale,
       dragging: false,
       activeBeat: 0,
+      settings: {
+        source: 'sine', // sine, square, triangle, sawtooth
+        volume: 0.5,
+        env: {
+          attack: 0.01,
+          decay: 0.1,
+          sustain: 0.8,
+          hold: 0,
+          release: 0.8,
+        }
+      }
     }
     this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
+    this.updateSetting = this.updateSetting.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
@@ -52,7 +71,7 @@ class App extends Component {
     this.setState(({ activeBeat, score, scale }) => {
       const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
       const notes = scale.filter((x, i) => score[newBeat][i]);
-      play(notes);
+      play(notes, this.state.settings);
 
       return { 
         activeBeat: newBeat,
@@ -68,6 +87,18 @@ class App extends Component {
     });
   }
 
+  updateSetting(setting, value){
+    const { settings } = this.state;
+    settings.env[setting] = value;
+    this.setState({ settings });
+  };
+
+  updateSource(value){
+    const { settings } = this.state;
+    settings.source = value;
+    this.setState({ settings });
+  };
+
   onMouseDown() {
     this.setState({ dragging: true });
   }
@@ -80,7 +111,8 @@ class App extends Component {
     const { 
       toggle, 
       onMouseDown, 
-      onMouseUp, 
+      onMouseUp,
+      updateSetting,
     } = this;
 
     const {
@@ -95,6 +127,17 @@ class App extends Component {
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
+          <select onChange={(e) => this.updateSource(e.target.value)}>
+            <option value="sine">sine</option>
+            <option value="square">square</option>
+            <option value="triangle">triangle</option>
+            <option value="sawtooth">sawtooth</option>
+          </select>
+          <Slider name="attack" min="1" max="100" multiplier={0.01 * 0.5} {...{ updateSetting } }/>
+          <Slider name="sustain" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
+          <Slider name="decay" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
+          <Slider name="release" min="1" max="100" multiplier={0.1 * 0.2} {...{ updateSetting } }/>
+          <Slider name="hold" min="0" max="100" multiplier={0.01} {...{ updateSetting } }/>
         </div>
       </Provider>
     );
