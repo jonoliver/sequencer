@@ -112,7 +112,7 @@ class App extends Component {
     this.setState(({ dragging, score }) => {
       if (checkDrag && !dragging) return;
       score[y][x] = +!(score[y][x]);
-      return score;  
+      return { score };
     });
   }
 
