@@ -19,11 +19,11 @@ body {
 }
 
 .cell {
-  $size: 3rem;
+  $size: 2rem;
   width: $size;
   height: $size;
   background: #666;
-  margin: 0.5rem;
+  margin: 0.3rem;
   border-radius: 50%;
 
   &.active {

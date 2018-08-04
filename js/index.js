@@ -1,5 +1,23 @@
 import React, { Component } from "react";
 import { play } from "./instrument";
+import Scale, { get, names } from 'music-scale';
+
+const scaleNames = names().sort();
+
+const keys = [
+  "A",
+  "A#",
+  "B",
+  "C",
+  "C#",
+  "D",
+  "D#",
+  "E",
+  "F",
+  "F#",
+  "G",
+  "G#",
+]
 
 const { Provider, Consumer } = React.createContext();
 
@@ -35,29 +53,38 @@ const Slider = ({ name, min, max, updateSetting, multiplier }) =>
     {name}
   </label>
 
+// const env = {"attack":0.005,"decay":0.13,"sustain":0.15,"hold":0.12,"release":1.5000000000000002};
+const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
+
+const getScale = (scaleName, key) => 
+  Scale(scaleName, `${key}4`)
+    .concat(Scale(scaleName, `${key}5`))
+    .concat([`${key}6`]).reverse();    
+
+
 class App extends Component {
   constructor(props){
     super(props);
-    this.state = {
+    const scaleName = 'minor pentatonic';
+    const key = 'E';
+    const scale = getScale(scaleName, key);
+  this.state = {
       score: props.score,
-      scale: props.scale,
       dragging: false,
       activeBeat: 0,
+      key,
+      scaleName,
+      scale,
       settings: {
         source: 'sine', // sine, square, triangle, sawtooth
-        volume: 0.5,
-        env: {
-          attack: 0.01,
-          decay: 0.1,
-          sustain: 0.8,
-          hold: 0,
-          release: 0.8,
-        }
-      }
+        volume: 0.25,
+        env,
+      },
     }
     this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
     this.updateSetting = this.updateSetting.bind(this);
+    this.updateScale = this.updateScale.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
@@ -99,6 +126,11 @@ class App extends Component {
     this.setState({ settings });
   };
 
+  updateScale(scaleName, key){
+    const scale = getScale(scaleName, key);
+    this.setState({ scale })
+  }
+
   onMouseDown() {
     this.setState({ dragging: true });
   }
@@ -118,6 +150,8 @@ class App extends Component {
     const {
       score: columns,
       activeBeat: activeColumn,
+      scaleName,
+      key,
     } = this.state;
 
     return (
@@ -127,12 +161,24 @@ class App extends Component {
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
-          <select onChange={(e) => this.updateSource(e.target.value)}>
-            <option value="sine">sine</option>
-            <option value="square">square</option>
-            <option value="triangle">triangle</option>
-            <option value="sawtooth">sawtooth</option>
+          <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value)}>
+            { keys.map(key => 
+              <option key={key} value={key}>{key}</option>
+            )}
           </select>
+          <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key)}>
+            { scaleNames.map(scale => 
+              <option key={scale} value={scale}>{scale}</option>
+            )}
+          </select>
+          <div>
+            <select onChange={(e) => this.updateSource(e.target.value)}>
+              <option value="sine">sine</option>
+              <option value="square">square</option>
+              <option value="triangle">triangle</option>
+              <option value="sawtooth">sawtooth</option>
+            </select>
+          </div>
           <Slider name="attack" min="1" max="100" multiplier={0.01 * 0.5} {...{ updateSetting } }/>
           <Slider name="sustain" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
           <Slider name="decay" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
