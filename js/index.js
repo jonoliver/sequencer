@@ -130,7 +130,7 @@ class App extends Component {
 
   updateScale(scaleName, key, base){
     const scale = getScale(scaleName, key, base);
-    this.setState({ scale })
+    this.setState({ scaleName, key, base, scale })
   }
 
   onMouseDown() {
