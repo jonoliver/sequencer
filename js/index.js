@@ -56,10 +56,10 @@ const Slider = ({ name, min, max, updateSetting, multiplier }) =>
 // const env = {"attack":0.005,"decay":0.13,"sustain":0.15,"hold":0.12,"release":1.5000000000000002};
 const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
 
-const getScale = (scaleName, key) => 
-  Scale(scaleName, `${key}4`)
-    .concat(Scale(scaleName, `${key}5`))
-    .concat([`${key}6`]).reverse();    
+const getScale = (scaleName, key, base) =>
+  Scale(scaleName, `${key}${base}`)
+    .concat(Scale(scaleName, `${key}${base + 1}`))
+    .concat([`${key}${base + 2}`]).reverse();
 
 
 class App extends Component {
@@ -67,7 +67,8 @@ class App extends Component {
     super(props);
     const scaleName = 'minor pentatonic';
     const key = 'E';
-    const scale = getScale(scaleName, key);
+    const base = 4;
+    const scale = getScale(scaleName, key, base);
   this.state = {
       score: props.score,
       dragging: false,
@@ -75,6 +76,7 @@ class App extends Component {
       key,
       scaleName,
       scale,
+      base,
       settings: {
         source: 'sine', // sine, square, triangle, sawtooth
         volume: 0.25,
@@ -126,8 +128,8 @@ class App extends Component {
     this.setState({ settings });
   };
 
-  updateScale(scaleName, key){
-    const scale = getScale(scaleName, key);
+  updateScale(scaleName, key, base){
+    const scale = getScale(scaleName, key, base);
     this.setState({ scale })
   }
 
@@ -152,6 +154,7 @@ class App extends Component {
       activeBeat: activeColumn,
       scaleName,
       key,
+      base,
     } = this.state;
 
     return (
@@ -161,12 +164,17 @@ class App extends Component {
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
-          <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value)}>
+          <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value, base)}>
             { keys.map(key => 
               <option key={key} value={key}>{key}</option>
             )}
           </select>
-          <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key)}>
+          <select defaultValue={base} onChange={(e) => this.updateScale(scaleName, key, parseInt(e.target.value))}>
+            { Array(5).fill(0).map((_, i) => 
+              <option key={i+1} value={i+1}>{i+1}</option>
+            )}
+          </select>
+          <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key, base)}>
             { scaleNames.map(scale => 
               <option key={scale} value={scale}>{scale}</option>
             )}
