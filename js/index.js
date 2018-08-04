@@ -93,7 +93,7 @@ class App extends Component {
 
   componentWillMount() {
     const { scale, score } = this.state;
-    setInterval(this.tick, 250);
+    setInterval(this.tick, 125);
   }
 
   tick(){
