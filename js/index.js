@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { Provider } from './context';
+import { Grid, Slider } from './controls';
 import { play } from "./instrument";
 import Scale, { get, names } from 'music-scale';
 
@@ -18,40 +20,6 @@ const keys = [
   "G",
   "G#",
 ]
-
-const { Provider, Consumer } = React.createContext();
-
-const Cell = ({ active, x, y }) =>
-  <Consumer>
-    { ({ toggle }) =>
-      <div 
-        onClick={() => toggle(x, y)}
-        onMouseEnter={() => toggle(x, y, true)}
-        className={`cell ${active ? 'active' : ''}`}
-      />
-    }
-  </Consumer>
-
-const Column = ({ cells, activeColumn, y }) =>
-  <div className={`column ${activeColumn === y ? 'active' : ''}`}>
-    {
-      cells.map((active, x) => <Cell key={x} {...{active, x, y}} />)
-    }
-  </div>
-
-const Grid = ({ columns, activeColumn }) => 
-  <div className="grid">
-    {
-      columns.map((cells, y) => <Column key={y} {...{cells, activeColumn, y}} />)
-    }  
-  </div>
-
-const Slider = ({ name, min, max, updateSetting, multiplier }) =>
-  <label htmlFor={name} className="slider">
-    <input type="range" min={min} max={max} name={name}
-      onChange={ (e) => updateSetting(name, e.target.value * multiplier) } />
-    {name}
-  </label>
 
 // const env = {"attack":0.005,"decay":0.13,"sustain":0.15,"hold":0.12,"release":1.5000000000000002};
 const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
