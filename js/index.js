@@ -1,8 +1,9 @@
 import React, { Component } from "react";
+import Scale, { get, names } from 'music-scale';
 import { Provider } from './context';
 import { Grid, Slider } from './controls';
 import { play } from "./instrument";
-import Scale, { get, names } from 'music-scale';
+import * as Adapters from './adapters';
 
 const scaleNames = names().sort();
 
@@ -28,7 +29,6 @@ const getScale = (scaleName, key, base) =>
   Scale(scaleName, `${key}${base}`)
     .concat(Scale(scaleName, `${key}${base + 1}`))
     .concat([`${key}${base + 2}`]).reverse();
-
 
 class App extends Component {
   constructor(props){
@@ -86,7 +86,7 @@ class App extends Component {
 
   updateSetting(setting, value){
     const { settings } = this.state;
-    settings.env[setting] = value;
+    settings.env[setting] = Adapters[setting](value);
     this.setState({ settings });
   };
 
@@ -155,11 +155,11 @@ class App extends Component {
               <option value="sawtooth">sawtooth</option>
             </select>
           </div>
-          <Slider name="attack" min="1" max="100" multiplier={0.01 * 0.5} {...{ updateSetting } }/>
-          <Slider name="sustain" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
-          <Slider name="decay" min="1" max="100" multiplier={0.01} {...{ updateSetting } }/>
-          <Slider name="release" min="1" max="100" multiplier={0.1 * 0.2} {...{ updateSetting } }/>
-          <Slider name="hold" min="0" max="100" multiplier={0.01} {...{ updateSetting } }/>
+          <Slider name="attack" min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="sustain" min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="decay" min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="release" min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="hold" min="0" max="100" {...{ updateSetting } }/>
         </div>
       </Provider>
     );
