@@ -26,9 +26,9 @@ export const Grid = ({ columns, activeColumn }) =>
     }  
   </div>
 
-export const Slider = ({ name, min, max, updateSetting }) =>
+export const Slider = ({ name, min, max, value, updateSetting }) =>
   <label htmlFor={name} className="slider">
-    <input type="range" min={min} max={max} name={name}
+    <input type="range" {...{ min, max, name, value }}
       onChange={ (e) => updateSetting(name, e.target.value) } />
     {name}
   </label>

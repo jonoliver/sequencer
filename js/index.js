@@ -23,7 +23,7 @@ const keys = [
 ]
 
 // const env = {"attack":0.005,"decay":0.13,"sustain":0.15,"hold":0.12,"release":1.5000000000000002};
-const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
+// const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
 
 const getScale = (scaleName, key, base) =>
   Scale(scaleName, `${key}${base}`)
@@ -37,7 +37,24 @@ class App extends Component {
     const key = 'E';
     const base = 4;
     const scale = getScale(scaleName, key, base);
-  this.state = {
+
+    const controls = {
+      attack: 1,
+      sustain: 21,
+      decay: 13,
+      release: 60,
+      hold: 1,
+    };
+
+    const env = {
+      attack: Adapters.attack(controls.attack),
+      sustain: Adapters.sustain(controls.sustain),
+      decay: Adapters.decay(controls.decay),
+      release: Adapters.release(controls.release),
+      hold: Adapters.hold(controls.hold),
+    }
+
+    this.state = {
       score: props.score,
       dragging: false,
       activeBeat: 0,
@@ -45,6 +62,7 @@ class App extends Component {
       scaleName,
       scale,
       base,
+      controls,
       settings: {
         source: 'sine', // sine, square, triangle, sawtooth
         volume: 0.25,
@@ -85,7 +103,8 @@ class App extends Component {
   }
 
   updateSetting(setting, value){
-    const { settings } = this.state;
+    const { settings, controls } = this.state;
+    controls[setting] = value;
     settings.env[setting] = Adapters[setting](value);
     this.setState({ settings });
   };
@@ -123,7 +142,16 @@ class App extends Component {
       scaleName,
       key,
       base,
+      controls,
     } = this.state;
+
+    const {
+      attack,
+      sustain,
+      decay,
+      release,
+      hold,
+    } = controls;
 
     return (
       <Provider value={{ toggle }}>
@@ -155,11 +183,11 @@ class App extends Component {
               <option value="sawtooth">sawtooth</option>
             </select>
           </div>
-          <Slider name="attack" min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="sustain" min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="decay" min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="release" min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="hold" min="0" max="100" {...{ updateSetting } }/>
+          <Slider name="attack" value={attack} min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="sustain" value={sustain} min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="release" value={release} min="1" max="100" {...{ updateSetting } }/>
+          <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting } }/>
         </div>
       </Provider>
     );
