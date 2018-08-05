@@ -25,6 +25,17 @@ const keys = [
 // const env = {"attack":0.005,"decay":0.13,"sustain":0.15,"hold":0.12,"release":1.5000000000000002};
 // const env = {"attack":0.005,"decay":0.11,"sustain":0.06,"hold":0.08,"release":1.3800000000000003};
 
+const defaultFilter = {
+  type: 'lowpass', // What type of filter is applied.
+  frequency: 400,       // The frequency, in hertz, to which the filter is applied.
+  q: 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
+  // env       : {          // Filter envelope.
+  //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
+  //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
+  // }
+};
+
+
 const getScale = (scaleName, key, base) =>
   Scale(scaleName, `${key}${base}`)
     .concat(Scale(scaleName, `${key}${base + 1}`))
@@ -67,12 +78,41 @@ class App extends Component {
         source: 'sine', // sine, square, triangle, sawtooth
         volume: 0.25,
         env,
+        // filter: defaultFilter,
+        // filter  : {
+        //   type      : 'lowpass', // What type of filter is applied.
+        //   frequency : 400,       // The frequency, in hertz, to which the filter is applied.
+        //   q         : 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
+        //   // env       : {          // Filter envelope.
+        //   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
+        //   //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
+        //   // }
+        // },
+        // delay: {
+        //   delayTime: .25,  // Time in seconds between each delayed playback.
+        //   wet: .5, // Relative volume change between the original sound and the first delayed playback.
+        //   feedback: .25, // Relative volume change between each delayed playback and the next. 
+        // },
+        // vibrato: { // A vibrating pitch effect.  Only works for oscillators.
+        //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+        //   magnitude: 40,      // how much the pitch changes. Sensible values are from 1 to 10.
+        //   speed: 4,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
+        //   attack: 0       // Time in seconds for the vibrato effect to reach peak magnitude.
+        // },
+        // tremolo: { // A vibrating volume effect.
+        //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+        //   magnitude: 0.5,      // how much the volume changes. Sensible values are from 1 to 10.
+        //   speed: 4,      // How quickly the volume changes, in cycles per second.  Sensible values are from 0.1 to 10.
+        //   attack: 0       // Time in seconds for the tremolo effect to reach peak magnitude.
+        // },
       },
     }
     this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
     this.updateSetting = this.updateSetting.bind(this);
     this.updateScale = this.updateScale.bind(this);
+    this.updateFilter = this.updateFilter.bind(this);
+    this.updateQ = this.updateQ.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
@@ -89,7 +129,7 @@ class App extends Component {
       play(notes, this.state.settings);
 
       return { 
-        activeBeat: newBeat,
+        activeBeat: newBeat, 
       }
     });
   }
@@ -118,6 +158,37 @@ class App extends Component {
   updateScale(scaleName, key, base){
     const scale = getScale(scaleName, key, base);
     this.setState({ scaleName, key, base, scale })
+  }
+
+  updateFilter(value){
+    const { settings } = this.state;
+    if (!settings.filter) return;
+    settings.filter.frequency = value;
+    this.setState({ settings });
+  }
+
+  updateFilterType(value){
+    const { settings } = this.state;
+    if (value) {
+      if (settings.filter) {
+        settings.filter.type = value;
+      }
+      else {
+        settings.filter = { ...defaultFilter, type: value }
+      }
+    } else {
+      settings.filter = null
+    }
+    console.log(settings.filter);
+    
+    this.setState({ settings });
+  }
+
+  updateQ(value){
+    const { settings } = this.state;
+    if (!settings.filter) return;
+    settings.filter.q = value;
+    this.setState({ settings });
   }
 
   onMouseDown() {
@@ -188,6 +259,24 @@ class App extends Component {
           <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting } }/>
           <Slider name="release" value={release} min="1" max="100" {...{ updateSetting } }/>
           <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting } }/>
+          <div>
+            <select onChange={(e) => this.updateFilterType(e.target.value)}>
+              <option value="">none</option>
+              <option value="highpass">highpass</option>
+              <option value="lowpass">lowpass</option>
+            </select>
+          </div>
+          <label htmlFor="cutoff" className="slider">
+            <input type="range" min={1} max={5000} name="cutoff"
+              onChange={ (e) => this.updateFilter(parseInt(e.target.value)) } />
+            {name}
+          </label>
+          <label htmlFor="q" className="slider">
+            <input type="range" min={1} max={50} name="q"
+              onChange={ (e) => this.updateQ(parseInt(e.target.value)) } />
+            {name}
+          </label>
+
         </div>
       </Provider>
     );
