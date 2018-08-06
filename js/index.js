@@ -4,6 +4,7 @@ import { Provider } from './context';
 import { Grid, Slider } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
+import { Transport } from 'tone';
 
 const scaleNames = names().sort();
 
@@ -113,13 +114,15 @@ class App extends Component {
     this.updateScale = this.updateScale.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
     this.updateQ = this.updateQ.bind(this);
+    this.updateBPM = this.updateBPM.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
 
   componentWillMount() {
-    const { scale, score } = this.state;
-    setInterval(this.tick, 125);
+    // setInterval(this.tick, 125);
+    Transport.scheduleRepeat(this.tick, '16n');
+    Transport.start()
   }
 
   tick(){
@@ -132,6 +135,12 @@ class App extends Component {
         activeBeat: newBeat, 
       }
     });
+  }
+
+  updateBPM(value){
+    Transport.pause();
+    Transport.bpm.value = value;
+    Transport.start();
   }
 
   toggle(x, y, checkDrag) {
@@ -259,6 +268,11 @@ class App extends Component {
           <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting } }/>
           <Slider name="release" value={release} min="1" max="100" {...{ updateSetting } }/>
           <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting } }/>
+          <label htmlFor="bpm" className="slider">
+            <input type="range" min={40} max={240}  name="bpm" defaultValue="120"
+              onChange={ (e) => this.updateBPM(parseInt(e.target.value)) } />
+            BPM
+          </label>
           <div>
             <select onChange={(e) => this.updateFilterType(e.target.value)}>
               <option value="">none</option>
@@ -269,14 +283,13 @@ class App extends Component {
           <label htmlFor="cutoff" className="slider">
             <input type="range" min={1} max={5000} name="cutoff"
               onChange={ (e) => this.updateFilter(parseInt(e.target.value)) } />
-            {name}
+            Cutoff
           </label>
           <label htmlFor="q" className="slider">
             <input type="range" min={1} max={50} name="q"
               onChange={ (e) => this.updateQ(parseInt(e.target.value)) } />
-            {name}
+            Q
           </label>
-
         </div>
       </Provider>
     );
