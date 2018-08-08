@@ -5,7 +5,7 @@ const Cell = ({ active, x, y }) =>
   <Consumer>
     { ({ toggle }) =>
       <div 
-        onClick={() => toggle(x, y)}
+        onMouseDown={() => toggle(x, y)}
         onMouseEnter={() => toggle(x, y, true)}
         className={`cell ${active ? 'active' : ''}`}
       />
