@@ -3,7 +3,7 @@ import Scale, { get, names } from 'music-scale';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
 import { Grid, Slider, Select } from './controls';
-import { play } from "./instrument";
+import * as Instrument from "./instrument2";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
 import patterns from './patterns.json';
@@ -31,7 +31,7 @@ const keys = [
 
 const defaultFilter = {
   type: 'lowpass', // What type of filter is applied.
-  frequency: 400,       // The frequency, in hertz, to which the filter is applied.
+  frequency: 250,       // The frequency, in hertz, to which the filter is applied.
   q: 10,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
   // env       : {          // Filter envelope.
   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
@@ -79,7 +79,43 @@ class App extends Component {
       hold: Adapters.hold(controls.hold),
     }
 
+    const settings = {
+      source: 'sine', // sine, square, triangle, sawtooth
+      volume: 0.25,
+      env,
+      // filter: defaultFilter,
+      // filter  : {
+      //   type      : 'lowpass', // What type of filter is applied.
+      //   frequency : 400,       // The frequency, in hertz, to which the filter is applied.
+      //   q         : 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
+      //   // env       : {          // Filter envelope.
+      //   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
+      //   //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
+      //   // }
+      // },
+      // delay: {
+      //   delayTime: .25,  // Time in seconds between each delayed playback.
+      //   wet: .5, // Relative volume change between the original sound and the first delayed playback.
+      //   feedback: .25, // Relative volume change between each delayed playback and the next.
+      // },
+      // vibrato: { // A vibrating pitch effect.  Only works for oscillators.
+      //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+      //   magnitude: 40,      // how much the pitch changes. Sensible values are from 1 to 10.
+      //   speed: 4,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
+      //   attack: 0       // Time in seconds for the vibrato effect to reach peak magnitude.
+      // },
+      // tremolo: { // A vibrating volume effect.
+      //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+      //   magnitude: 0.5,      // how much the volume changes. Sensible values are from 1 to 10.
+      //   speed: 4,      // How quickly the volume changes, in cycles per second.  Sensible values are from 0.1 to 10.
+      //   attack: 0       // Time in seconds for the tremolo effect to reach peak magnitude.
+      // },
+    }
+
+    Instrument.build(props.score[0].length, settings);
+
     this.state = {
+      settings,
       score: props.score,
       dragging: false,
       activeBeat: 0,
@@ -106,8 +142,8 @@ class App extends Component {
     this.updateBase = this.updateBase.bind(this);
     this.updateScaleName = this.updateScaleName.bind(this);
     this.updateSource = this.updateSource.bind(this);
-    this.UpdateFilterValue = this.UpdateFilterValue.bind(this);
     this.updateFilterType = this.updateFilterType.bind(this);
+    this.updateCutoff = this.updateCutoff.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
     this.savePattern = this.savePattern.bind(this);
@@ -127,7 +163,7 @@ class App extends Component {
     this.setState(({ activeBeat, score, scale }) => {
       const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
       const notes = scale.filter((x, i) => score[newBeat][i]);
-      play(notes, this.state.settings);
+      Instrument.play(notes, this.state.settings);
 
       return {
         activeBeat: newBeat,
@@ -153,12 +189,14 @@ class App extends Component {
     const { settings, controls } = this.state;
     controls[setting] = value;
     settings.env[setting] = Adapters[setting](value);
+    Instrument.update(settings);
     this.setState({ settings, activeSynth: null });
   };
 
   updateSource({ value }) {
     const { settings } = this.state;
     settings.source = value;
+    Instrument.update(settings);
     this.setState({ settings, activeSynth: null });
   };
 
@@ -182,11 +220,12 @@ class App extends Component {
     this.updateScale({ scaleName: value });
   }
 
-
-  UpdateFilterValue(value) {
+  updateCutoff(value){
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
+    console.log(value);
+    Instrument.updateCutoff(value);
     this.setState({ settings, activeSynth: null });
   }
 
@@ -202,6 +241,7 @@ class App extends Component {
     } else {
       settings.filter = null
     }
+    Instrument.updateFilter(settings.filter);
     this.setState({ settings, activeSynth: null });
   }
 
@@ -411,7 +451,7 @@ class App extends Component {
                   <input type="range" min={1} max={5000} name="cutoff"
                     value={filterCutoffValue}
                     className="range-slider__range"
-                    onChange={(e) => this.UpdateFilterValue(parseInt(e.target.value))} />
+                    onChange={(e) => this.updateCutoff(parseInt(e.target.value))} />
                   cutoff
                  </label>
                 <label htmlFor="q" className="slider">

@@ -17,3 +17,7 @@ export const play = (notes, settings) => {
     console.error(e);
   }
 };
+
+export const build = () => {}
+export const update = () => {}
+export const updateFilter = () => {}
