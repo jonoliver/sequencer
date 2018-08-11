@@ -297,13 +297,13 @@ class App extends Component {
                 <label htmlFor="cutoff" className="slider">
                   <input type="range" min={1} max={5000} name="cutoff"
                     onChange={(e) => this.updateFilter(parseInt(e.target.value))} />
-                  Cutoff
-          </label>
+                  cutoff
+                </label>
                 <label htmlFor="q" className="slider">
                   <input type="range" min={1} max={50} name="q"
                     onChange={(e) => this.updateQ(parseInt(e.target.value))} />
-                  Q
-          </label>
+                  q
+                 </label>
               </section>
 
             </div>
