@@ -43,7 +43,7 @@ const getScale = (scaleName, key, base) =>
     .concat([`${key}${base + 2}`]).reverse();
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
     const scaleName = 'minor pentatonic';
     const key = 'E';
@@ -125,19 +125,19 @@ class App extends Component {
     Transport.start()
   }
 
-  tick(){
+  tick() {
     this.setState(({ activeBeat, score, scale }) => {
       const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
       const notes = scale.filter((x, i) => score[newBeat][i]);
       play(notes, this.state.settings);
 
-      return { 
-        activeBeat: newBeat, 
+      return {
+        activeBeat: newBeat,
       }
     });
   }
 
-  updateBPM(value){
+  updateBPM(value) {
     Transport.pause();
     Transport.bpm.value = value;
     Transport.start();
@@ -151,32 +151,32 @@ class App extends Component {
     });
   }
 
-  updateSetting(setting, value){
+  updateSetting(setting, value) {
     const { settings, controls } = this.state;
     controls[setting] = value;
     settings.env[setting] = Adapters[setting](value);
     this.setState({ settings });
   };
 
-  updateSource(value){
+  updateSource(value) {
     const { settings } = this.state;
     settings.source = value;
     this.setState({ settings });
   };
 
-  updateScale(scaleName, key, base){
+  updateScale(scaleName, key, base) {
     const scale = getScale(scaleName, key, base);
     this.setState({ scaleName, key, base, scale })
   }
 
-  updateFilter(value){
+  updateFilter(value) {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
     this.setState({ settings });
   }
 
-  updateFilterType(value){
+  updateFilterType(value) {
     const { settings } = this.state;
     if (value) {
       if (settings.filter) {
@@ -189,11 +189,11 @@ class App extends Component {
       settings.filter = null
     }
     console.log(settings.filter);
-    
+
     this.setState({ settings });
   }
 
-  updateQ(value){
+  updateQ(value) {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.q = value;
@@ -207,11 +207,11 @@ class App extends Component {
   onMouseUp() {
     this.setState({ dragging: false });
   }
-  
+
   render() {
-    const { 
-      toggle, 
-      onMouseDown, 
+    const {
+      toggle,
+      onMouseDown,
       onMouseUp,
       updateSetting,
     } = this;
