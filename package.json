@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "parcel index.html"
+    "start": "parcel index.html",
+    "build": "parcel build index.html --out-dir build --public-url '.'",
+    "deploy": "git push origin `git subtree split --prefix build`:gh-pages --force"
   },
   "author": "",
   "license": "ISC",
