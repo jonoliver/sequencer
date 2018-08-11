@@ -5,7 +5,6 @@ import { Grid, Slider } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
-
 const scaleNames = names().sort();
 
 const keys = [
@@ -235,61 +234,80 @@ class App extends Component {
 
     return (
       <Provider value={{ toggle }}>
-        <div className="container" {...{ 
+        <div className="container" {...{
           onMouseDown,
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
-          <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value, base)}>
-            { keys.map(key => 
-              <option key={key} value={key}>{key}</option>
-            )}
-          </select>
-          <select defaultValue={base} onChange={(e) => this.updateScale(scaleName, key, parseInt(e.target.value))}>
-            { Array(5).fill(0).map((_, i) => 
-              <option key={i+1} value={i+1}>{i+1}</option>
-            )}
-          </select>
-          <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key, base)}>
-            { scaleNames.map(scale => 
-              <option key={scale} value={scale}>{scale}</option>
-            )}
-          </select>
           <div>
-            <select onChange={(e) => this.updateSource(e.target.value)}>
-              <option value="sine">sine</option>
-              <option value="square">square</option>
-              <option value="triangle">triangle</option>
-              <option value="sawtooth">sawtooth</option>
-            </select>
+            <h3 className="control-heading">BPM</h3>
+            <label htmlFor="bpm" className="slider">
+              <input type="range" min={40} max={240} name="bpm" defaultValue="120" className="bpm"
+                onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
+            </label>
+            <div className="controls">
+              <section>
+                <h3 className="control-heading">Wave Shape</h3>
+                <div>
+                  <select onChange={(e) => this.updateSource(e.target.value)}>
+                    <option value="sine">sine</option>
+                    <option value="square">square</option>
+                    <option value="triangle">triangle</option>
+                    <option value="sawtooth">sawtooth</option>
+                  </select>
+                </div>
+                <h3 className="control-heading">Scale</h3>
+                <div>
+                  <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value, base)}>
+                    {keys.map(key =>
+                      <option key={key} value={key}>{key}</option>
+                    )}
+                  </select>
+                  <select defaultValue={base} onChange={(e) => this.updateScale(scaleName, key, parseInt(e.target.value))}>
+                    {Array(5).fill(0).map((_, i) =>
+                      <option key={i + 1} value={i + 1}>{i + 1}</option>
+                    )}
+                  </select>
+                </div>
+                <div>
+                  <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key, base)}>
+                    {scaleNames.map(scale =>
+                      <option key={scale} value={scale}>{scale}</option>
+                    )}
+                  </select>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="control-heading">Envelope</h3>
+                <Slider name="attack" value={attack} min="1" max="100" {...{ updateSetting }} />
+                <Slider name="sustain" value={sustain} min="1" max="100" {...{ updateSetting }} />
+                <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting }} />
+                <Slider name="release" value={release} min="1" max="100" {...{ updateSetting }} />
+                <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting }} />
+
+              </section>
+              <section>
+                <h3 className="control-heading">Filter</h3>
+                <select onChange={(e) => this.updateFilterType(e.target.value)}>
+                  <option value="">none</option>
+                  <option value="highpass">highpass</option>
+                  <option value="lowpass">lowpass</option>
+                </select>
+                <label htmlFor="cutoff" className="slider">
+                  <input type="range" min={1} max={5000} name="cutoff"
+                    onChange={(e) => this.updateFilter(parseInt(e.target.value))} />
+                  Cutoff
+          </label>
+                <label htmlFor="q" className="slider">
+                  <input type="range" min={1} max={50} name="q"
+                    onChange={(e) => this.updateQ(parseInt(e.target.value))} />
+                  Q
+          </label>
+              </section>
+
+            </div>
           </div>
-          <Slider name="attack" value={attack} min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="sustain" value={sustain} min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="release" value={release} min="1" max="100" {...{ updateSetting } }/>
-          <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting } }/>
-          <label htmlFor="bpm" className="slider">
-            <input type="range" min={40} max={240}  name="bpm" defaultValue="120"
-              onChange={ (e) => this.updateBPM(parseInt(e.target.value)) } />
-            BPM
-          </label>
-          <div>
-            <select onChange={(e) => this.updateFilterType(e.target.value)}>
-              <option value="">none</option>
-              <option value="highpass">highpass</option>
-              <option value="lowpass">lowpass</option>
-            </select>
-          </div>
-          <label htmlFor="cutoff" className="slider">
-            <input type="range" min={1} max={5000} name="cutoff"
-              onChange={ (e) => this.updateFilter(parseInt(e.target.value)) } />
-            Cutoff
-          </label>
-          <label htmlFor="q" className="slider">
-            <input type="range" min={1} max={50} name="q"
-              onChange={ (e) => this.updateQ(parseInt(e.target.value)) } />
-            Q
-          </label>
         </div>
       </Provider>
     );
