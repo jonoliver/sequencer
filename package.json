@@ -26,6 +26,7 @@
     "music-scale": "^1.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
+    "react-select": "^2.0.0",
     "tone": "^0.12.80",
     "web-audio-daw": "^4.2.0"
   },

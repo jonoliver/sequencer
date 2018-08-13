@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
 import { Provider } from './context';
-import { Grid, Slider } from './controls';
+import { Grid, Slider, Select } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
@@ -28,7 +28,7 @@ const keys = [
 const defaultFilter = {
   type: 'lowpass', // What type of filter is applied.
   frequency: 400,       // The frequency, in hertz, to which the filter is applied.
-  q: 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
+  q: 10,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
   // env       : {          // Filter envelope.
   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
   //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
@@ -91,7 +91,7 @@ class App extends Component {
         // delay: {
         //   delayTime: .25,  // Time in seconds between each delayed playback.
         //   wet: .5, // Relative volume change between the original sound and the first delayed playback.
-        //   feedback: .25, // Relative volume change between each delayed playback and the next. 
+        //   feedback: .25, // Relative volume change between each delayed playback and the next.
         // },
         // vibrato: { // A vibrating pitch effect.  Only works for oscillators.
         //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
@@ -111,7 +111,9 @@ class App extends Component {
     this.toggle = this.toggle.bind(this);
     this.updateSetting = this.updateSetting.bind(this);
     this.updateScale = this.updateScale.bind(this);
+    this.updateSource = this.updateSource.bind(this);
     this.updateFilter = this.updateFilter.bind(this);
+    this.updateFilterType = this.updateFilterType.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -157,7 +159,7 @@ class App extends Component {
     this.setState({ settings });
   };
 
-  updateSource(value) {
+  updateSource({ value }) {
     const { settings } = this.state;
     settings.source = value;
     this.setState({ settings });
@@ -175,7 +177,7 @@ class App extends Component {
     this.setState({ settings });
   }
 
-  updateFilterType(value) {
+  updateFilterType({ value }) {
     const { settings } = this.state;
     if (value) {
       if (settings.filter) {
@@ -187,8 +189,6 @@ class App extends Component {
     } else {
       settings.filter = null
     }
-    console.log(settings.filter);
-
     this.setState({ settings });
   }
 
@@ -232,6 +232,8 @@ class App extends Component {
       hold,
     } = controls;
 
+    const scaleOptions = scaleNames.map(scale => ({ value: scale, label: scale }));
+
     return (
       <Provider value={{ toggle }}>
         <div className="container" {...{
@@ -248,34 +250,41 @@ class App extends Component {
             <div className="controls">
               <section>
                 <h3 className="control-heading">Wave Shape</h3>
-                <div>
-                  <select onChange={(e) => this.updateSource(e.target.value)}>
-                    <option value="sine">sine</option>
-                    <option value="square">square</option>
-                    <option value="triangle">triangle</option>
-                    <option value="sawtooth">sawtooth</option>
-                  </select>
-                </div>
+                <Select
+                  className="select"
+                  classNamePrefix="select"
+                  defaultValue={{ label: 'sine', value: 'sine' }}
+                  options={[
+                    { label: 'sine', value: 'sine' },
+                    { label: 'triangle', value: 'triangle' },
+                    { label: 'square', value: 'square' },
+                    { label: 'sawtooth', value: 'sawtooth' },
+                  ]}
+                  onChange={this.updateSource}
+                />
                 <h3 className="control-heading">Scale</h3>
-                <div>
-                  <select defaultValue={key} onChange={(e) => this.updateScale(scaleName, e.target.value, base)}>
-                    {keys.map(key =>
-                      <option key={key} value={key}>{key}</option>
-                    )}
-                  </select>
-                  <select defaultValue={base} onChange={(e) => this.updateScale(scaleName, key, parseInt(e.target.value))}>
-                    {Array(5).fill(0).map((_, i) =>
-                      <option key={i + 1} value={i + 1}>{i + 1}</option>
-                    )}
-                  </select>
-                </div>
-                <div>
-                  <select defaultValue={scaleName} onChange={(e) => this.updateScale(e.target.value, key, base)}>
-                    {scaleNames.map(scale =>
-                      <option key={scale} value={scale}>{scale}</option>
-                    )}
-                  </select>
-                </div>
+                <Select
+                  className="select small root"
+                  classNamePrefix="select"
+                  defaultValue={{ value: 'E', label: 'E' }}
+                  options={keys.map(key => ({ label: key, value: key }))}
+                  onChange={({ value }) => this.updateScale(scaleName, value, base)}
+                />
+                <Select
+                  className="select small"
+                  classNamePrefix="select"
+                  defaultValue={{ value: '4', label: '4' }}
+                  options={Array(5).fill(0).map((_, i) => ({ label: i + 1, value: i + 1 }))}
+                  onChange={({ value }) => this.updateScale(scaleName, key, parseInt(value))}
+                />
+                <Select
+                  isSearchable
+                  className="select"
+                  classNamePrefix="select"
+                  defaultValue={scaleOptions.find(option => option.value === 'minor pentatonic')}
+                  options={scaleOptions}
+                  onChange={({ value }) => this.updateScale(value, key, base)}
+                />
               </section>
 
               <section>
@@ -289,21 +298,27 @@ class App extends Component {
               </section>
               <section>
                 <h3 className="control-heading">Filter</h3>
-                <select onChange={(e) => this.updateFilterType(e.target.value)}>
-                  <option value="">none</option>
-                  <option value="highpass">highpass</option>
-                  <option value="lowpass">lowpass</option>
-                </select>
+                <Select
+                  className="select"
+                  classNamePrefix="select"
+                  defaultValue={{ value: '', label: 'none' }}
+                  options={[
+                    { value: '', label: 'none' },
+                    { value: 'highpass', label: 'highpass' },
+                    { value: 'lowpass', label: 'lowpass' },
+                  ]}
+                  onChange={this.updateFilterType}
+                />
                 <label htmlFor="cutoff" className="slider">
                   <input type="range" min={1} max={5000} name="cutoff"
                     onChange={(e) => this.updateFilter(parseInt(e.target.value))} />
                   cutoff
-                </label>
+                 </label>
                 <label htmlFor="q" className="slider">
                   <input type="range" min={1} max={50} name="q"
                     onChange={(e) => this.updateQ(parseInt(e.target.value))} />
                   q
-                 </label>
+                </label>
               </section>
 
             </div>

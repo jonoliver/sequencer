@@ -1,0 +1,21 @@
+- react-select 3
+  - wire events
+  - style
+  - weird option hover react thing
+  - custom sort for scale
+
+- range slider styling 3
+- cutoff/Q 2D position slider 3
+- column highlight style 2
+- undo/redo 5
+  - flux/redux?
+- saved songs 5
+- saved instrument configs 5
+- tooltips 3
+- ditch wad/use tone 8
+- tone filters ?
+
+bugs
+- tone/wad breaks safari
+- augmented scale breaks
+

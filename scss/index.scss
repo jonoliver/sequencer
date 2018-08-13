@@ -50,7 +50,7 @@ $cell-active: #e8c519;
         // background: #ffe562;
         background: lighten($cell-active, 25%);
       }
-    }  
+    }
   }
 }
 
@@ -76,6 +76,61 @@ $cell-active: #e8c519;
 
 section {
   margin: 0 1rem;
+}
+
+.select__option {
+  height: 30px;
+}
+.select {
+  color: black;
+  width: 12rem;
+  font-size: 1rem;
+  // letter-spacing: 0.1rem;
+  // margin-bottom: 1rem;
+
+  &.small {
+    display: inline-block;
+    width: 47%;
+
+    &.root {
+      margin-right: 6%;
+    }
+  }
+
+  .select__control {
+    height: 25px;
+    min-height: 0;
+    background: #636363;
+    flex-wrap: nowrap;
+    margin-bottom: 0.75rem;
+
+    &:hover {
+      border-color: hsl(0,0%,80%);
+      background: #717171;
+    }
+    &--is-focused {
+      $highlight: white;
+      border-color: $highlight;
+
+      box-shadow: none;
+
+      .select__indicator {
+        color: white;
+      }
+    }
+  }
+  .select__single-value {
+    color: white;
+  }
+  .select__option--is-focused {
+    background: #e6e6e6;
+  }
+  .select__option--is-selected {
+    background: #4d9fd6;
+  }
+  .select__input {
+    color: white;
+  }
 }
 
 .bpm {
