@@ -124,7 +124,7 @@ class App extends Component {
     // setInterval(this.tick, 125);
     Transport.scheduleRepeat(this.tick, '16n');
     Transport.start()
-  }
+   }
 
   tick() {
     this.setState(({ activeBeat, score, scale }) => {
@@ -244,7 +244,8 @@ class App extends Component {
           <div>
             <h3 className="control-heading">BPM</h3>
             <label htmlFor="bpm" className="slider">
-              <input type="range" min={40} max={240} name="bpm" defaultValue="120" className="bpm"
+              <input type="range" min={40} max={240} name="bpm" defaultValue="120"
+                className="bpm range-slider__range"
                 onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
             </label>
             <div className="controls">
@@ -311,11 +312,13 @@ class App extends Component {
                 />
                 <label htmlFor="cutoff" className="slider">
                   <input type="range" min={1} max={5000} name="cutoff"
+                    className="range-slider__range"
                     onChange={(e) => this.updateFilter(parseInt(e.target.value))} />
                   cutoff
                  </label>
                 <label htmlFor="q" className="slider">
                   <input type="range" min={1} max={50} name="q"
+                    className="range-slider__range"
                     onChange={(e) => this.updateQ(parseInt(e.target.value))} />
                   q
                 </label>
