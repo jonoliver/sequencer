@@ -1,6 +1,6 @@
-Yet another frontend boilerplate. Uses [Parcel](https://parceljs.org/) and [Jest](https://facebook.github.io/jest/) for minimal configuration, maximum hacking.
+A super fun web audio music sequencer.
 
-`master` branch is vanilla js. There's a [React](https://github.com/jonoliver/boilerplate/tree/react) branch too.
+[Try it out!](https://jonoliver.github.io/sequencer)
 
 # Installation
 ```
