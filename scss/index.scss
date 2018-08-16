@@ -12,6 +12,14 @@ body {
   text-align: center;
 }
 
+a {
+  color: white;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
 $cell: #8b8e8e; // #8ad1ce
 $cell-active: #e8c519;
 

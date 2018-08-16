@@ -79,6 +79,7 @@ class App extends Component {
         volume: 0.25,
         env,
       },
+      patterns: [],
     }
     this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -89,15 +90,17 @@ class App extends Component {
     this.updateFilterType = this.updateFilterType.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
+    this.savePattern = this.savePattern.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
 
   componentWillMount() {
     // setInterval(this.tick, 125);
+
     Transport.scheduleRepeat(this.tick, '16n');
     Transport.start()
-   }
+  }
 
   tick() {
     this.setState(({ activeBeat, score, scale }) => {
@@ -170,6 +173,21 @@ class App extends Component {
     if (!settings.filter) return;
     settings.filter.q = value;
     this.setState({ settings });
+  }
+
+  savePattern() {
+    this.setState(({ patterns, score }) => {
+      return {
+        patterns: patterns.slice().concat([score.map(s => s.slice())]),
+      }
+    });
+  }
+
+  setPattern(index) {
+    console.log(index)
+    this.setState(({ patterns }) => ({
+      score: patterns[index].map(x => x.slice()),
+    }));
   }
 
   onMouseDown() {
@@ -296,8 +314,21 @@ class App extends Component {
                   q
                 </label>
               </section>
-
             </div>
+            <button
+              onClick={this.savePattern}
+            >Save</button>
+            {
+              this.state.patterns.map((pattern, i) =>
+                <div>
+
+                  <a
+                    key={i}
+                    onClick={() => this.setPattern(i)}
+                  >Pattern {i + 1}</a>
+                </div>
+              )
+            }
           </div>
         </div>
       </Provider>
