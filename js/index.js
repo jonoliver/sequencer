@@ -78,33 +78,6 @@ class App extends Component {
         source: 'sine', // sine, square, triangle, sawtooth
         volume: 0.25,
         env,
-        // filter: defaultFilter,
-        // filter  : {
-        //   type      : 'lowpass', // What type of filter is applied.
-        //   frequency : 400,       // The frequency, in hertz, to which the filter is applied.
-        //   q         : 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
-        //   // env       : {          // Filter envelope.
-        //   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
-        //   //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
-        //   // }
-        // },
-        // delay: {
-        //   delayTime: .25,  // Time in seconds between each delayed playback.
-        //   wet: .5, // Relative volume change between the original sound and the first delayed playback.
-        //   feedback: .25, // Relative volume change between each delayed playback and the next.
-        // },
-        // vibrato: { // A vibrating pitch effect.  Only works for oscillators.
-        //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
-        //   magnitude: 40,      // how much the pitch changes. Sensible values are from 1 to 10.
-        //   speed: 4,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
-        //   attack: 0       // Time in seconds for the vibrato effect to reach peak magnitude.
-        // },
-        // tremolo: { // A vibrating volume effect.
-        //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
-        //   magnitude: 0.5,      // how much the volume changes. Sensible values are from 1 to 10.
-        //   speed: 4,      // How quickly the volume changes, in cycles per second.  Sensible values are from 0.1 to 10.
-        //   attack: 0       // Time in seconds for the tremolo effect to reach peak magnitude.
-        // },
       },
     }
     this.tick = this.tick.bind(this);
