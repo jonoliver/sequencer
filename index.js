@@ -2,6 +2,11 @@ import React from "react";
 import { render } from "react-dom";
 import Main from "./js";
 import "./scss";
+import { Transport } from 'tone';
+
+document.addEventListener('keyup', ({ code }) => {
+  if (code === 'Space') Transport.toggle();
+});
 
 const patternLength = 16;
 const scaleLength = 11;
