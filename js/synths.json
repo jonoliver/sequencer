@@ -1,5 +1,82 @@
 [
   {
+    "controls": {
+      "attack": 1,
+      "sustain": 21,
+      "decay": 13,
+      "release": 60,
+      "hold": 1
+    },
+    "settings": {
+      "source": "sine",
+      "volume": 0.25,
+      "env": {
+        "attack": 0.005,
+        "sustain": 0.21,
+        "decay": 0.13,
+        "release": 1.2000000000000002,
+        "hold": 0.01
+      }
+    },
+    "scale": [
+      "E6",
+      "D6",
+      "B5",
+      "A5",
+      "G5",
+      "E5",
+      "D5",
+      "B4",
+      "A4",
+      "G4",
+      "E4"
+    ],
+    "key": "E",
+    "scaleName": "minor pentatonic",
+    "base": 4
+  },
+  {
+    "controls": {
+      "attack": 1,
+      "sustain": 21,
+      "decay": 13,
+      "release": 60,
+      "hold": 1
+    },
+    "settings": {
+      "source": "sawtooth",
+      "volume": 0.25,
+      "env": {
+        "attack": 0.005,
+        "sustain": 0.21,
+        "decay": 0.13,
+        "release": 1.2000000000000002,
+        "hold": 0.01
+      },
+      "filter": {
+        "type": "lowpass",
+        "frequency": 1130,
+        "q": 18
+      }
+    },
+    "scale": [
+      "E3",
+      "D3",
+      "B2",
+      "A2",
+      "G2",
+      "E2",
+      "D2",
+      "B1",
+      "A1",
+      "G1",
+      "E1"
+    ],
+    "key": "E",
+    "scaleName": "minor pentatonic",
+    "base": 1
+  },
+  {
     "settings": {
       "source": "square",
       "volume": 0.25,
