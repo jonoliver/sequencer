@@ -1,10 +1,14 @@
 import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
+import { cloneDeep } from 'lodash';
 import { Provider } from './context';
 import { Grid, Slider, Select } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
+import patterns from './patterns.json';
+import synths from './synths.json';
+
 const scaleNames = names().sort();
 
 const keys = [
@@ -40,6 +44,7 @@ const getScale = (scaleName, key, base) =>
   Scale(scaleName, `${key}${base}`)
     .concat(Scale(scaleName, `${key}${base + 1}`))
     .concat([`${key}${base + 2}`]).reverse();
+
 
 class App extends Component {
   constructor(props) {
@@ -79,7 +84,8 @@ class App extends Component {
         volume: 0.25,
         env,
       },
-      patterns: [],
+      patterns,
+      synths,
     }
     this.tick = this.tick.bind(this);
     this.toggle = this.toggle.bind(this);
@@ -91,6 +97,7 @@ class App extends Component {
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
     this.savePattern = this.savePattern.bind(this);
+    this.saveSynth = this.saveSynth.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
@@ -178,15 +185,45 @@ class App extends Component {
   savePattern() {
     this.setState(({ patterns, score }) => {
       return {
-        patterns: patterns.slice().concat([score.map(s => s.slice())]),
+        patterns: [...patterns, cloneDeep(score)],
+      }
+    });
+  }
+
+  saveSynth() {
+    this.setState(({
+      synths,
+      controls,
+      settings,
+      key,
+      scaleName,
+      scale,
+      base,
+    }) => {
+      return {
+        synths: [...synths, {
+          controls: cloneDeep(controls),
+          settings: cloneDeep(settings),
+          scale: cloneDeep(scale),
+          key,
+          scaleName,
+          base,
+        }],
       }
     });
   }
 
   setPattern(index) {
-    console.log(index)
     this.setState(({ patterns }) => ({
-      score: patterns[index].map(x => x.slice()),
+      score: cloneDeep(patterns[index]),
+    }));
+  }
+
+  setSynth(index) {
+    console.log(this.state.synths[index]);
+
+    this.setState(({ synths }) => ({
+      ...cloneDeep(synths[index])
     }));
   }
 
@@ -245,7 +282,7 @@ class App extends Component {
                 <Select
                   className="select"
                   classNamePrefix="select"
-                  defaultValue={{ label: 'sine', value: 'sine' }}
+                  value={{ label: this.state.settings.source, value: this.state.settings.source }}
                   options={[
                     { label: 'sine', value: 'sine' },
                     { label: 'triangle', value: 'triangle' },
@@ -258,14 +295,14 @@ class App extends Component {
                 <Select
                   className="select small root"
                   classNamePrefix="select"
-                  defaultValue={{ value: 'E', label: 'E' }}
+                  value={{ value: key, label: key }}
                   options={keys.map(key => ({ label: key, value: key }))}
                   onChange={({ value }) => this.updateScale(scaleName, value, base)}
                 />
                 <Select
                   className="select small"
                   classNamePrefix="select"
-                  defaultValue={{ value: '4', label: '4' }}
+                  value={{ value: base, label: base }}
                   options={Array(5).fill(0).map((_, i) => ({ label: i + 1, value: i + 1 }))}
                   onChange={({ value }) => this.updateScale(scaleName, key, parseInt(value))}
                 />
@@ -273,7 +310,7 @@ class App extends Component {
                   isSearchable
                   className="select"
                   classNamePrefix="select"
-                  defaultValue={scaleOptions.find(option => option.value === 'minor pentatonic')}
+                  value={{ label: scaleName, value: scaleName }}
                   options={scaleOptions}
                   onChange={({ value }) => this.updateScale(value, key, base)}
                 />
@@ -317,19 +354,29 @@ class App extends Component {
             </div>
             <button
               onClick={this.savePattern}
-            >Save</button>
+            >Save Pattern</button>
             {
               this.state.patterns.map((pattern, i) =>
-                <div>
-
+                <div key={i}>
                   <a
-                    key={i}
                     onClick={() => this.setPattern(i)}
                   >Pattern {i + 1}</a>
                 </div>
               )
             }
+            <button
+              onClick={this.saveSynth}
+            >Save Synth</button>
           </div>
+          {
+              this.state.synths.map((synth, i) =>
+                <div key={i}>
+                  <a
+                    onClick={() => this.setSynth(i)}
+                  >Synth {i + 1}</a>
+                </div>
+              )
+            }
         </div>
       </Provider>
     );

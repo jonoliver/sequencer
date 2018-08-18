@@ -23,6 +23,7 @@
     "react-test-renderer": "^16.4.0"
   },
   "dependencies": {
+    "lodash": "^4.17.10",
     "music-scale": "^1.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",

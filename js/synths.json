@@ -1,0 +1,38 @@
+[
+  {
+    "settings": {
+      "source": "square",
+      "volume": 0.25,
+      "env": {
+        "attack": 0.31,
+        "sustain": 0.21,
+        "decay": 0.13,
+        "release": 1.2000000000000002,
+        "hold": 0.01
+      }
+    },
+    "controls": {
+      "attack": "62",
+      "sustain": 21,
+      "decay": 13,
+      "release": 60,
+      "hold": 1
+    },
+    "base": 1,
+    "scale": [
+      "C3",
+      "Bb2",
+      "G2",
+      "F2",
+      "Eb2",
+      "C2",
+      "Bb1",
+      "G1",
+      "F1",
+      "Eb1",
+      "C1"
+    ],
+    "scaleName": "minor pentatonic",
+    "key": "C"
+  }
+]

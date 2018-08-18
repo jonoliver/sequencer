@@ -36,10 +36,10 @@ export const Slider = ({ name, min, max, value, updateSetting }) =>
   </label>
 
 export class Select extends Component {
-  // Since all of the select options are static, no need to rerender
-  // This fixes a bug that caused hovered options to display incorrectly
-  shouldComponentUpdate(){
-    return false;
+  shouldComponentUpdate(nextProps){
+    return (nextProps.value && this.props.value)
+      ? nextProps.value.value !== this.props.value.value
+      : false;
   }
 
   render(){
