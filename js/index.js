@@ -248,6 +248,7 @@ class App extends Component {
       key,
       base,
       controls,
+      settings,
     } = this.state;
 
     const {
@@ -259,6 +260,10 @@ class App extends Component {
     } = controls;
 
     const scaleOptions = scaleNames.map(scale => ({ value: scale, label: scale }));
+
+    const filterValue = settings.filter
+      ? { value: settings.filter.type, label: settings.filter.type }
+      : { value: '', label: 'none' };
 
     return (
       <Provider value={{ toggle }}>
@@ -328,7 +333,7 @@ class App extends Component {
                 <Select
                   className="select"
                   classNamePrefix="select"
-                  defaultValue={{ value: '', label: 'none' }}
+                  value={filterValue}
                   options={[
                     { value: '', label: 'none' },
                     { value: 'highpass', label: 'highpass' },
