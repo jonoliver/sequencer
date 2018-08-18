@@ -220,8 +220,6 @@ class App extends Component {
   }
 
   setSynth(index) {
-    console.log(this.state.synths[index]);
-
     this.setState(({ synths }) => ({
       ...cloneDeep(synths[index])
     }));
@@ -355,28 +353,29 @@ class App extends Component {
             <button
               onClick={this.savePattern}
             >Save Pattern</button>
-            {
-              this.state.patterns.map((pattern, i) =>
-                <div key={i}>
-                  <a
+            <div>
+              {
+                this.state.patterns.map((pattern, i) =>
+                  <a key={i}
                     onClick={() => this.setPattern(i)}
-                  >Pattern {i + 1}</a>
-                </div>
-              )
-            }
+                  >{i + 1}</a>
+                )
+              }
+            </div>
             <button
               onClick={this.saveSynth}
             >Save Synth</button>
-          </div>
-          {
-              this.state.synths.map((synth, i) =>
-                <div key={i}>
+            <div>
+              {
+                this.state.synths.map((synth, i) =>
                   <a
+                    key={i}
                     onClick={() => this.setSynth(i)}
-                  >Synth {i + 1}</a>
-                </div>
-              )
-            }
+                  >{i + 1}</a>
+                )
+              }
+            </div>
+          </div>
         </div>
       </Provider>
     );
