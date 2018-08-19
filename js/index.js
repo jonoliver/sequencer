@@ -92,7 +92,7 @@ class App extends Component {
     this.updateSetting = this.updateSetting.bind(this);
     this.updateScale = this.updateScale.bind(this);
     this.updateSource = this.updateSource.bind(this);
-    this.updateFilter = this.updateFilter.bind(this);
+    this.UpdateFilterValue = this.UpdateFilterValue.bind(this);
     this.updateFilterType = this.updateFilterType.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
@@ -153,7 +153,7 @@ class App extends Component {
     this.setState({ scaleName, key, base, scale })
   }
 
-  updateFilter(value) {
+  UpdateFilterValue(value) {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
@@ -265,6 +265,9 @@ class App extends Component {
       ? { value: settings.filter.type, label: settings.filter.type }
       : { value: '', label: 'none' };
 
+    const filterCutoffValue = settings.filter && settings.filter.frequency ? settings.filter.frequency : 1;
+    const filterQValue = settings.filter && settings.filter.q ? settings.filter.q : 1;
+
     return (
       <Provider value={{ toggle }}>
         <div className="container" {...{
@@ -343,12 +346,14 @@ class App extends Component {
                 />
                 <label htmlFor="cutoff" className="slider">
                   <input type="range" min={1} max={5000} name="cutoff"
+                    value={filterCutoffValue}
                     className="range-slider__range"
-                    onChange={(e) => this.updateFilter(parseInt(e.target.value))} />
+                    onChange={(e) => this.UpdateFilterValue(parseInt(e.target.value))} />
                   cutoff
                  </label>
                 <label htmlFor="q" className="slider">
                   <input type="range" min={1} max={50} name="q"
+                    value={filterQValue}
                     className="range-slider__range"
                     onChange={(e) => this.updateQ(parseInt(e.target.value))} />
                   q
