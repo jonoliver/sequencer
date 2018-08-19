@@ -10,6 +10,7 @@ body {
   background: #424242;
   color: #eee;
   text-align: center;
+  margin: 1rem 0;
 }
 
 a {
@@ -19,13 +20,28 @@ a {
   height: 2rem;
   display: inline-block;
   background: #636363;
-  margin: 0.15rem;
+  margin: 1px;
   line-height: 2rem;
-  border-radius: 38%;
-  border: 1px solid hsl(0,0%,80%);
+  user-select: none;
 
   &:hover {
-    text-decoration: underline;
+    background: #717171;
+  }
+
+  &.save-button {
+    width: 100px;
+    display: inline-block;
+    padding: 0 0.5rem;
+    margin-right: 1rem;
+
+    border-radius: 1rem;
+    border: 1px solid hsl(0,0%,80%);
+    font-size: 1rem;
+  }
+
+  &.active {
+    color: black;
+    background: white;
   }
 }
 
@@ -276,4 +292,5 @@ input::-moz-focus-outer {
 
 .bpm {
   width: 300px;
+  margin: 0;
 }

@@ -74,6 +74,8 @@ class App extends Component {
       score: props.score,
       dragging: false,
       activeBeat: 0,
+      activePattern: 0,
+      activeSynth: 0,
       key,
       scaleName,
       scale,
@@ -131,7 +133,7 @@ class App extends Component {
     this.setState(({ dragging, score }) => {
       if (checkDrag && !dragging) return;
       score[y][x] = +!(score[y][x]);
-      return { score };
+      return { score, activePattern: null };
     });
   }
 
@@ -139,25 +141,25 @@ class App extends Component {
     const { settings, controls } = this.state;
     controls[setting] = value;
     settings.env[setting] = Adapters[setting](value);
-    this.setState({ settings });
+    this.setState({ settings, activeSynth: null });
   };
 
   updateSource({ value }) {
     const { settings } = this.state;
     settings.source = value;
-    this.setState({ settings });
+    this.setState({ settings, activeSynth: null });
   };
 
   updateScale(scaleName, key, base) {
     const scale = getScale(scaleName, key, base);
-    this.setState({ scaleName, key, base, scale })
+    this.setState({ scaleName, key, base, scale, activeSynth: null })
   }
 
   UpdateFilterValue(value) {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
-    this.setState({ settings });
+    this.setState({ settings, activeSynth: null });
   }
 
   updateFilterType({ value }) {
@@ -172,14 +174,14 @@ class App extends Component {
     } else {
       settings.filter = null
     }
-    this.setState({ settings });
+    this.setState({ settings, activeSynth: null });
   }
 
   updateQ(value) {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.q = value;
-    this.setState({ settings });
+    this.setState({ settings, activeSynth: null });
   }
 
   savePattern() {
@@ -216,12 +218,14 @@ class App extends Component {
   setPattern(index) {
     this.setState(({ patterns }) => ({
       score: cloneDeep(patterns[index]),
+      activePattern: index,
     }));
   }
 
   setSynth(index) {
     this.setState(({ synths }) => ({
-      ...cloneDeep(synths[index])
+      ...cloneDeep(synths[index]),
+      activeSynth: index,
     }));
   }
 
@@ -244,6 +248,8 @@ class App extends Component {
     const {
       score: columns,
       activeBeat: activeColumn,
+      activePattern,
+      activeSynth,
       scaleName,
       key,
       base,
@@ -282,6 +288,35 @@ class App extends Component {
                 className="bpm range-slider__range"
                 onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
             </label>
+            <div style={{margin: '1rem'}}>
+              <a
+                onClick={this.savePattern}
+                className='save-button'
+              >save pattern</a>
+              {
+                this.state.patterns.map((pattern, i) =>
+                  <a key={i}
+                    onClick={() => this.setPattern(i)}
+                    className={i === activePattern ? 'active' : '' }
+                  >{i + 1}</a>
+                )
+              }
+            </div>
+            <div>
+              <a
+                onClick={this.saveSynth}
+                className='save-button'
+              >save synth</a>
+              {
+                this.state.synths.map((synth, i) =>
+                  <a
+                    key={i}
+                    onClick={() => this.setSynth(i)}
+                    className={i === activeSynth ? 'active' : '' }
+                  >{i + 1}</a>
+                )
+              }
+            </div>
             <div className="controls">
               <section>
                 <h3 className="control-heading">Wave Shape</h3>
@@ -359,31 +394,6 @@ class App extends Component {
                   q
                 </label>
               </section>
-            </div>
-            <button
-              onClick={this.savePattern}
-            >Save Pattern</button>
-            <div>
-              {
-                this.state.patterns.map((pattern, i) =>
-                  <a key={i}
-                    onClick={() => this.setPattern(i)}
-                  >{i + 1}</a>
-                )
-              }
-            </div>
-            <button
-              onClick={this.saveSynth}
-            >Save Synth</button>
-            <div>
-              {
-                this.state.synths.map((synth, i) =>
-                  <a
-                    key={i}
-                    onClick={() => this.setSynth(i)}
-                  >{i + 1}</a>
-                )
-              }
             </div>
           </div>
         </div>
