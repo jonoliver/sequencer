@@ -77,40 +77,40 @@
     "base": 1
   },
   {
+    "controls": {
+      "attack": "8",
+      "sustain": "9",
+      "decay": "19",
+      "release": "40",
+      "hold": 1
+    },
     "settings": {
       "source": "square",
       "volume": 0.25,
       "env": {
-        "attack": 0.31,
-        "sustain": 0.21,
-        "decay": 0.13,
-        "release": 1.2000000000000002,
+        "attack": 0.04,
+        "sustain": 0.09,
+        "decay": 0.19,
+        "release": 0.8,
         "hold": 0.01
       }
     },
-    "controls": {
-      "attack": "62",
-      "sustain": 21,
-      "decay": 13,
-      "release": 60,
-      "hold": 1
-    },
-    "base": 1,
     "scale": [
-      "C3",
-      "Bb2",
+      "E3",
+      "D3",
+      "B2",
+      "A2",
       "G2",
-      "F2",
-      "Eb2",
-      "C2",
-      "Bb1",
+      "E2",
+      "D2",
+      "B1",
+      "A1",
       "G1",
-      "F1",
-      "Eb1",
-      "C1"
+      "E1"
     ],
+    "key": "E",
     "scaleName": "minor pentatonic",
-    "key": "C"
+    "base": 1
   },
   {
     "controls": {
@@ -189,5 +189,46 @@
     "key": "E",
     "scaleName": "minor pentatonic",
     "base": 4
+  },
+  {
+    "controls": {
+      "attack": "5",
+      "sustain": "14",
+      "decay": "19",
+      "release": "41",
+      "hold": 1
+    },
+    "settings": {
+      "source": "square",
+      "volume": 0.25,
+      "env": {
+        "attack": 0.025,
+        "sustain": 0.14,
+        "decay": 0.19,
+        "release": 0.8200000000000002,
+        "hold": 0.01
+      },
+      "filter": {
+        "type": "lowpass",
+        "frequency": 1400,
+        "q": 10
+      }
+    },
+    "scale": [
+      "E5",
+      "D5",
+      "B4",
+      "A4",
+      "G4",
+      "E4",
+      "D4",
+      "B3",
+      "A3",
+      "G3",
+      "E3"
+    ],
+    "key": "E",
+    "scaleName": "minor pentatonic",
+    "base": 3
   }
 ]
