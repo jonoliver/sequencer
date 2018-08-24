@@ -40,7 +40,7 @@ const defaultFilter = {
 };
 
 
-const getScale = (scaleName, key, base) =>
+const getScale = ({ scaleName, key, base }) =>
   Scale(scaleName, `${key}${base}`)
     .concat(Scale(scaleName, `${key}${base + 1}`))
     .concat([`${key}${base + 2}`]).reverse();
@@ -52,7 +52,7 @@ class App extends Component {
     const scaleName = 'minor pentatonic';
     const key = 'E';
     const base = 4;
-    const scale = getScale(scaleName, key, base);
+    const scale = getScale({ scaleName, key, base });
 
     const controls = {
       attack: 1,
@@ -93,6 +93,9 @@ class App extends Component {
     this.toggle = this.toggle.bind(this);
     this.updateSetting = this.updateSetting.bind(this);
     this.updateScale = this.updateScale.bind(this);
+    this.updateKey = this.updateKey.bind(this);
+    this.updateBase = this.updateBase.bind(this);
+    this.updateScaleName = this.updateScaleName.bind(this);
     this.updateSource = this.updateSource.bind(this);
     this.UpdateFilterValue = this.UpdateFilterValue.bind(this);
     this.updateFilterType = this.updateFilterType.bind(this);
@@ -150,10 +153,26 @@ class App extends Component {
     this.setState({ settings, activeSynth: null });
   };
 
-  updateScale(scaleName, key, base) {
-    const scale = getScale(scaleName, key, base);
-    this.setState({ scaleName, key, base, scale, activeSynth: null })
+  updateScale(newSetting) {
+    this.setState(({ key, base, scaleName }) => {
+      const newState = { key, base, scaleName, ...newSetting };
+      const scale = getScale({ ...newState });
+      return {  ...newState, scale, activeSynth: null };
+    });
   }
+
+  updateKey({ value }) {
+    this.updateScale({ key: value });
+  }
+
+  updateBase({ value }) {
+    this.updateScale({ base: value });
+  }
+
+  updateScaleName({ value }) {
+    this.updateScale({ scaleName: value });
+  }
+
 
   UpdateFilterValue(value) {
     const { settings } = this.state;
@@ -338,14 +357,14 @@ class App extends Component {
                   classNamePrefix="select"
                   value={{ value: key, label: key }}
                   options={keys.map(key => ({ label: key, value: key }))}
-                  onChange={({ value }) => this.updateScale(scaleName, value, base)}
+                  onChange={this.updateKey}
                 />
                 <Select
                   className="select small"
                   classNamePrefix="select"
                   value={{ value: base, label: base }}
                   options={Array(5).fill(0).map((_, i) => ({ label: i + 1, value: i + 1 }))}
-                  onChange={({ value }) => this.updateScale(scaleName, key, parseInt(value))}
+                  onChange={this.updateBase}
                 />
                 <Select
                   isSearchable
@@ -353,7 +372,7 @@ class App extends Component {
                   classNamePrefix="select"
                   value={{ label: scaleName, value: scaleName }}
                   options={scaleOptions}
-                  onChange={({ value }) => this.updateScale(value, key, base)}
+                  onChange={this.updateScaleName}
                 />
               </section>
 
