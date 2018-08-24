@@ -1,11 +1,19 @@
 import Wad from 'web-audio-daw';
 
-export const play = (notes, settings) => {
+const playNote = (notes, settings) => {
   const wads = notes.map(note =>
     new Wad({ ...settings, pitch: note })
   );
-
   const instrument = new Wad.Poly();
   wads.forEach(wad => instrument.add(wad));
   instrument.play();
+}
+
+export const play = (notes, settings) => {
+  try {
+    playNote(notes, settings);
+  }
+  catch (e) {
+    console.error(e);
+  }
 };
