@@ -40,10 +40,19 @@ const defaultFilter = {
 };
 
 
+const convertSharpNote = note => {
+  if (!note.includes('##')) return note;
+  let index = keys.indexOf(note.slice(0,2)) + 1;
+  if (index === keys.length) index = 0;
+  return `${keys[index]}${note[note.length - 1]}`;
+}
+
 const getScale = ({ scaleName, key, base }) =>
   Scale(scaleName, `${key}${base}`)
     .concat(Scale(scaleName, `${key}${base + 1}`))
-    .concat([`${key}${base + 2}`]).reverse();
+    .concat([`${key}${base + 2}`])
+    .map(convertSharpNote)
+    .reverse();
 
 
 class App extends Component {
