@@ -3,6 +3,14 @@ import { render } from "react-dom";
 import Main from "./js";
 import "./scss";
 import { Transport } from 'tone';
+import Wad from 'web-audio-daw';
+
+import Recorder from 'recorderjs';
+
+window.Wad = Wad;
+window.Recorder = Recorder;
+
+
 
 document.addEventListener('keyup', ({ code }) => {
   if (code === 'Space') Transport.toggle();

@@ -5,7 +5,7 @@ import { Provider } from './context';
 import { Grid, Slider, Select } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
-import { Transport } from 'tone';
+// import { Transport } from 'tone';
 import patterns from './patterns.json';
 import synths from './synths.json';
 
@@ -117,10 +117,10 @@ class App extends Component {
   }
 
   componentWillMount() {
-    // setInterval(this.tick, 125);
+    setInterval(this.tick, 125);
 
-    Transport.scheduleRepeat(this.tick, '16n');
-    Transport.start()
+    // Transport.scheduleRepeat(this.tick, '16n');
+    // Transport.start()
   }
 
   tick() {
