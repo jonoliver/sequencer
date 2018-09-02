@@ -2,15 +2,18 @@ import React from "react";
 import { render } from "react-dom";
 import Main from "./js";
 import "./scss";
-import { Transport } from 'tone';
+// import { Transport } from 'tone';
 import Wad from 'web-audio-daw';
-
-import Recorder from 'recorderjs';
-
 window.Wad = Wad;
+import Recorder from './js/recorderjs/recorder';
 window.Recorder = Recorder;
 
+window.dest = Wad.audioContext.createMediaStreamDestination();
+const worker = new Worker('js/recorderjs/recorderWorker.js');
 
+window.recorder = new Recorder(dest, null, worker);
+
+// recorder.exportWAV(blob => Recorder.forceDownload(blob));
 
 document.addEventListener('keyup', ({ code }) => {
   if (code === 'Space') Transport.toggle();
