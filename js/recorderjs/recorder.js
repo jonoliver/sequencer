@@ -74,13 +74,15 @@ var Recorder = function(source, cfg, worker){
 
 Recorder.forceDownload = function(blob, filename){
   var url = (window.URL || window.webkitURL).createObjectURL(blob);
+  console.log({url});
+
   var link = window.document.createElement('a');
   link.href = url;
   link.download = filename || 'output.wav';
   var click = document.createEvent("Event");
-  debugger;
   click.initEvent("click", true, true);
   link.dispatchEvent(click);
+  document.querySelector('body').append(link);
 }
 
 module.exports = Recorder;

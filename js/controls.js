@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactSelect from 'react-select';
 import { Consumer } from './context';
+import * as Recorder from './recorder';
 
 const Cell = ({ active, x, y }) =>
   <Consumer>
@@ -44,5 +45,53 @@ export class Select extends Component {
 
   render(){
     return <ReactSelect {...this.props } />
+  }
+}
+
+export class RecordButton extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      isRecording: false,
+      url: null,
+    }
+    this.toggleRecord = this.toggleRecord.bind(this);
+    this.setLink = this.setLink.bind(this);
+  }
+
+  setLink(url){
+    this.setState({ url });
+  }
+
+
+  toggleRecord(){
+    this.setState(({ isRecording }) => {
+      if (isRecording) {
+        Recorder.stop(this.setLink);
+      } else {
+        Recorder.record();
+      }
+
+      return { isRecording: !isRecording };
+    });
+  }
+
+  render(){
+    const { isRecording, url } = this.state;
+    return (
+      <div>
+        <button
+          onClick={this.toggleRecord}
+        >
+          { isRecording ? 'Stop' : 'Start' } recording
+        </button>
+        {
+          url && <a
+            href={url}
+            download='output.wav'
+          ></a>
+        }
+      </div>
+    )
   }
 }

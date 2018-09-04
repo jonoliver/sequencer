@@ -5,13 +5,13 @@ import "./scss";
 import Tone, { Transport } from 'tone';
 import Wad from 'web-audio-daw';
 window.Wad = Wad;
-import Recorder from './js/recorderjs/recorder';
-window.Recorder = Recorder;
+// import Recorder from './js/recorderjs/recorder';
+// window.Recorder = Recorder;
 
-window.dest = Wad.audioContext.createMediaStreamDestination();
-const worker = new Worker('js/recorderjs/recorderWorker.js');
+// window.dest = Wad.audioContext.createMediaStreamDestination();
+// const worker = new Worker('js/recorderjs/recorderWorker.js');
 
-window.recorder = new Recorder(dest, null, worker);
+// window.recorder = new Recorder(dest, null, worker);
 
 // recorder.exportWAV(blob => Recorder.forceDownload(blob));
 

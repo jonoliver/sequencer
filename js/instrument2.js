@@ -1,5 +1,4 @@
-import { Synth, PolySynth, Filter, Master, Distortion, Transport } from 'tone';
-
+import { Synth, PolySynth, Filter, Master, Distortion } from 'tone';
 let synth;
 
 const settingsAdapter = ({ env, source }) => {
@@ -70,7 +69,7 @@ export const updateCutoff = (value) => {
 
 // Transport.bpm.value = 60;
 
-// Transport.scheduleRepeat(() => 
+// Transport.scheduleRepeat(() =>
 //   synth.triggerAttackRelease(["C5"], "16n")
 // , '4n');
 

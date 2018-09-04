@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
-import { Grid, Slider, Select } from './controls';
+import { Grid, Slider, Select, RecordButton } from './controls';
 import * as Instrument from "./instrument2";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
@@ -385,6 +385,8 @@ class App extends Component {
                 )
               }
             </div>
+            <RecordButton />
+
             <div className="controls">
               <section>
                 <h3 className="control-heading">Wave Shape</h3>
