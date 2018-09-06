@@ -112,8 +112,6 @@ class App extends Component {
       // },
     }
 
-    Instrument.build(props.score[0].length, settings);
-
     this.state = {
       settings,
       score: props.score,
@@ -189,14 +187,12 @@ class App extends Component {
     const { settings, controls } = this.state;
     controls[setting] = value;
     settings.env[setting] = Adapters[setting](value);
-    Instrument.update(settings);
     this.setState({ settings, activeSynth: null });
   };
 
   updateSource({ value }) {
     const { settings } = this.state;
     settings.source = value;
-    Instrument.update(settings);
     this.setState({ settings, activeSynth: null });
   };
 
@@ -224,8 +220,6 @@ class App extends Component {
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
-    console.log(value);
-    Instrument.updateCutoff(value);
     this.setState({ settings, activeSynth: null });
   }
 
@@ -241,7 +235,6 @@ class App extends Component {
     } else {
       settings.filter = null
     }
-    Instrument.updateFilter(settings.filter);
     this.setState({ settings, activeSynth: null });
   }
 
