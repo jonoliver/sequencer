@@ -3,7 +3,7 @@ import Scale, { get, names } from 'music-scale';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
 import { Grid, Slider, Select, RecordButton } from './controls';
-import * as Instrument from "./instrument2";
+import * as Synth from "./synth";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
 import patterns from './patterns.json';
@@ -161,7 +161,7 @@ class App extends Component {
     this.setState(({ activeBeat, score, scale }) => {
       const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
       const notes = scale.filter((x, i) => score[newBeat][i]);
-      Instrument.play(notes, this.state.settings);
+      Synth.play(notes, this.state.settings);
 
       return {
         activeBeat: newBeat,
