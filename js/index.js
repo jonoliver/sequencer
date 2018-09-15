@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
-import { Grid, Slider, Select, RecordButton } from './controls';
+import { Grid, Slider, Select, RecordButton, PlayButton } from './controls';
 import * as Synth from "./synth";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
@@ -150,7 +150,7 @@ class App extends Component {
     this.onMouseUp = this.onMouseUp.bind(this);
   }
 
-  componentWillMount() {
+  componentDidMount() {
     // setInterval(this.tick, 125);
 
     Transport.scheduleRepeat(this.tick, '16n');
@@ -342,6 +342,8 @@ class App extends Component {
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
+          <PlayButton />
+          <RecordButton />
           <div>
             <h3 className="control-heading">BPM</h3>
             <label htmlFor="bpm" className="slider">
@@ -349,6 +351,8 @@ class App extends Component {
                 className="bpm range-slider__range"
                 onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
             </label>
+          </div>
+          <div>
             <div style={{margin: '1rem'}}>
               <a
                 onClick={this.savePattern}
@@ -378,7 +382,6 @@ class App extends Component {
                 )
               }
             </div>
-            <RecordButton />
 
             <div className="controls">
               <section>

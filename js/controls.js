@@ -1,5 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ReactSelect from 'react-select';
+import { Transport } from 'tone';
 import { Consumer } from './context';
 import * as Recorder from './recorder';
 
@@ -48,6 +49,43 @@ export class Select extends Component {
   }
 }
 
+export class PlayButton extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isPlaying: true,
+    };
+    this.togglePlay = this.togglePlay.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('keyup', (event) => {
+      if (event.code === 'Space') {
+        event.preventDefault();
+        this.togglePlay();
+      }
+    });
+  }
+
+  togglePlay(){
+    this.setState(({ isPlaying }) => {
+      Transport.toggle();
+      return { isPlaying: !isPlaying };
+    });
+  }
+
+  render(){
+    const { isPlaying } = this.state;
+    return (
+      <button
+        onClick={this.togglePlay}
+        className={isPlaying ? 'play' : 'pause'}
+      >
+      </button>
+    )
+  }
+}
+
 export class RecordButton extends Component {
   constructor(props){
     super(props);
@@ -79,11 +117,11 @@ export class RecordButton extends Component {
   render(){
     const { isRecording, url } = this.state;
     return (
-      <div>
+      <Fragment>
         <button
           onClick={this.toggleRecord}
+          className={`record ${isRecording ? 'active' : ''}`}
         >
-          { isRecording ? 'Stop' : 'Start' } recording
         </button>
         {
           url && <a
@@ -91,7 +129,7 @@ export class RecordButton extends Component {
             download='output.wav'
           ></a>
         }
-      </div>
+      </Fragment>
     )
   }
 }

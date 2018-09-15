@@ -294,3 +294,71 @@ input::-moz-focus-outer {
   width: 300px;
   margin: 0;
 }
+
+@mixin playback-button() {
+  background: #7c7c7c;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  outline: none;
+  margin-right: 1em;
+  &:hover {
+    background: #999999;
+  }
+
+  &::after {
+    content: ' ';
+    width: 15px;
+    height: 15px;
+    // background: #504545;
+    display: block;
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 15px;
+    height: 15px;
+  }
+}
+
+.record {
+  @include playback-button();
+
+  &::after {
+    background: #504545;
+    display: block;
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  &.active {
+    &::after {
+      background: red;
+    }
+  }
+}
+
+.play {
+  @include playback-button();
+
+  &::after {
+    margin-left: 4px;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 12px solid #79e879;
+  }
+}
+
+.pause {
+  @include playback-button();
+
+  &::after {
+    background: #504545;
+    display: block;
+    position: absolute;
+  }
+}

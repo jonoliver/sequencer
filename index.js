@@ -2,13 +2,7 @@ import React from "react";
 import { render } from "react-dom";
 import Main from "./js";
 import "./scss";
-import Tone, { Transport } from 'tone';
 
-document.addEventListener('keyup', ({ code }) => {
-  if (code === 'Space') Transport.toggle();
-});
-
-window.Tone = Tone;
 const patternLength = 16;
 const scaleLength = 11;
 
