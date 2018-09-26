@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
+import NumericInput from 'react-numeric-input';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
-import { Grid, Slider, Select, RecordButton, PlayButton } from './controls';
+import { Grid, Slider, Select, RecordButton, PlayButton, NumberInput } from './controls';
 import * as Synth from "./synth";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
@@ -83,6 +84,7 @@ class App extends Component {
       source: 'sine', // sine, square, triangle, sawtooth
       volume: 0.25,
       env,
+      hold: '16n',
       // filter: defaultFilter,
       // filter  : {
       //   type      : 'lowpass', // What type of filter is applied.
@@ -144,6 +146,7 @@ class App extends Component {
     this.updateCutoff = this.updateCutoff.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
+    this.updateNotelength = this.updateNotelength.bind(this);
     this.savePattern = this.savePattern.bind(this);
     this.saveSynth = this.saveSynth.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
@@ -245,6 +248,11 @@ class App extends Component {
     this.setState({ settings, activeSynth: null });
   }
 
+  updateNotelength({ value }){
+    const { settings } = this.state;
+    this.setState({ settings: { ...settings, hold: value }, activeSynth: null })
+  }
+
   savePattern() {
     this.setState(({ patterns, score }) => {
       return {
@@ -304,6 +312,7 @@ class App extends Component {
       onMouseDown,
       onMouseUp,
       updateSetting,
+      updateBPM,
     } = this;
 
     const {
@@ -336,7 +345,7 @@ class App extends Component {
     const filterQValue = settings.filter && settings.filter.q ? settings.filter.q : 1;
 
     return (
-      <Provider value={{ toggle }}>
+      <Provider value={{ toggle, updateBPM }}>
         <div className="container" {...{
           onMouseDown,
           onMouseUp,
@@ -344,6 +353,11 @@ class App extends Component {
           <Grid {...{ columns, activeColumn }} />
           <PlayButton />
           <RecordButton />
+          <NumberInput bpm={300} />
+          <NumericInput min={40} max={240}
+            defaultValue={Transport.bpm.value}
+            onChange={(value) => this.updateBPM(value)}
+          />
           <div>
             <h3 className="control-heading">BPM</h3>
             <label htmlFor="bpm" className="slider">
@@ -429,7 +443,20 @@ class App extends Component {
                 <Slider name="sustain" value={sustain} min="1" max="100" {...{ updateSetting }} />
                 <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting }} />
                 <Slider name="release" value={release} min="1" max="100" {...{ updateSetting }} />
-                <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting }} />
+                <Slider name="hold" value={hold} min="0.1" max="100" {...{ updateSetting }} />
+                <Select
+                  className="select"
+                  classNamePrefix="select"
+                  defaultValue={{ value: '16', label: '16' }}
+                  options={[
+                    { value: '1', label: '1' },
+                    { value: '2', label: '2' },
+                    { value: '4', label: '4' },
+                    { value: '8', label: '8' },
+                    { value: '16', label: '16' },
+                  ]}
+                  onChange={this.updateNotelength}
+                />
 
               </section>
               <section>

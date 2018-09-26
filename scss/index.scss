@@ -107,6 +107,15 @@ $cell-active: #e8c519;
   text-align: left;
 }
 
+input[type="number"] {
+  background: #636363;
+  color: white;
+  border: hsl(0,0%,80%) 1px solid;
+  border-radius: 4px;
+  padding: 5px 0 5px 10px;
+  width: 33px;
+}
+
 section {
   margin: 0 1rem;
 }

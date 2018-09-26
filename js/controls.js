@@ -133,3 +133,71 @@ export class RecordButton extends Component {
     )
   }
 }
+
+const Arrow = () =>
+  <svg className="css-19bqh2r" height="20" width="20" viewBox="0 0 20 20" aria-hidden="true" focusable="false"><path d="M4.516 7.548c0.436-0.446 1.043-0.481 1.576 0l3.908 3.747 3.908-3.747c0.533-0.481 1.141-0.446 1.574 0 0.436 0.445 0.408 1.197 0 1.615-0.406 0.418-4.695 4.502-4.695 4.502-0.217 0.223-0.502 0.335-0.787 0.335s-0.57-0.112-0.789-0.335c0 0-4.287-4.084-4.695-4.502s-0.436-1.17 0-1.615z"></path></svg>
+
+export class NumberInput extends Component {
+
+  constructor(props){
+    super(props);
+    this.state = props;
+    this.updateBPM = this.updateBPM.bind(this);
+    this.incrementBPM = this.incrementBPM.bind(this);
+    this.decrementBPM = this.decrementBPM.bind(this);
+  }
+
+  updateBPM(event) {
+    const { value } = event.target;
+    console.log(event.type, this.state.bpm, value);
+
+    if (event.key === 'Enter'
+      // || (event.type === 'change' && this.state.bpm !== value)
+  ) {
+      event.preventDefault();
+      this.setTransportBPM(value);
+    }
+
+    this.setState({ bpm: value });
+  }
+
+  incrementBPM(){
+    const bpm = parseInt(this.state.bpm) + 1;
+    this.setTransportBPM(bpm);
+    this.setState({ bpm });
+  }
+
+  decrementBPM(){
+    const bpm = parseInt(this.state.bpm) - 1;
+    this.setTransportBPM(bpm);
+    this.setState({ bpm });
+  }
+
+  setTransportBPM(value){
+    Transport.pause();
+    Transport.bpm.value = value;
+    Transport.start();
+  }
+
+  render() {
+    const { bpm } = this.state;
+    return (
+          <div>
+            <input type="number"
+              value={bpm}
+              onKeyUp={this.updateBPM}
+              onChange={this.updateBPM}
+            />
+          <div style={{ rotate: '180deg' }}>
+            <a onClick={this.incrementBPM}>
+              <Arrow />
+            </a>
+          </div>
+            <a onClick={this.decrementBPM}>
+              <Arrow />
+            </a>
+
+        </div>
+    );
+  }
+}
