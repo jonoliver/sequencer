@@ -149,6 +149,7 @@ export class BpmInput extends Component {
       ...props,
       isKeyPressed: false,
     };
+    this.bpmMax = 300;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.onKeyUp = this.onKeyUp.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -176,7 +177,9 @@ export class BpmInput extends Component {
   }
 
   onChange(event) {
-    const { value } = event.target;
+    let { value } = event.target;
+    const { bpmMax } = this;
+    if (value > bpmMax) value = bpmMax;
     this.setState({ bpm: value });
     if (!this.state.isKeyPressed) {
       setTransportBPM(value);
@@ -189,7 +192,7 @@ export class BpmInput extends Component {
       <input type="number"
         value={bpm}
         min={1}
-        max={300}
+        max={this.bpmMax}
         onKeyDown={this.onKeyDown}
         onKeyUp={this.onKeyUp}
         onChange={this.onChange}
