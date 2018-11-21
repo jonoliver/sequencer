@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import ReactSelect from 'react-select';
 import { Transport } from 'tone';
+import { debounce } from 'lodash';
 import { Consumer } from './context';
 import * as Recorder from './recorder';
 
@@ -134,6 +135,12 @@ export class RecordButton extends Component {
   }
 }
 
+const setTransportBPM = debounce((value) => {
+  Transport.pause();
+  Transport.bpm.value = value;
+  Transport.start();
+}, 300);
+
 export class BpmInput extends Component {
 
   constructor(props){
@@ -163,7 +170,7 @@ export class BpmInput extends Component {
     const shouldUpdateBPM = value && event.key === 'Enter';
     this.setState({ isKeyPressed: false }, () => {
       if (shouldUpdateBPM) {
-        this.setTransportBPM(value);
+        setTransportBPM(value);
       }
     });
   }
@@ -172,14 +179,8 @@ export class BpmInput extends Component {
     const { value } = event.target;
     this.setState({ bpm: value });
     if (!this.state.isKeyPressed) {
-      this.setTransportBPM(value);
+      setTransportBPM(value);
     }
-  }
-
-  setTransportBPM(value){
-    Transport.pause();
-    Transport.bpm.value = value;
-    Transport.start();
   }
 
   render() {
