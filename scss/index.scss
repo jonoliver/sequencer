@@ -113,7 +113,7 @@ input[type="number"] {
   border: hsl(0,0%,80%) 1px solid;
   border-radius: 4px;
   padding: 5px 0 5px 10px;
-  width: 33px;
+  width: 38px;
 }
 
 section {
@@ -297,11 +297,6 @@ $range-label-width: 60px !default;
 input::-moz-focus-inner,
 input::-moz-focus-outer {
   border: 0;
-}
-
-.bpm {
-  width: 300px;
-  margin: 0;
 }
 
 @mixin playback-button() {
