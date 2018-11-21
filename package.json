@@ -27,7 +27,6 @@
     "music-scale": "^1.2.0",
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
-    "react-numeric-input": "^2.2.3",
     "react-select": "^2.0.0",
     "recorderjs": "^1.0.1",
     "tone": "^0.12.80",

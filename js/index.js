@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
-import NumericInput from 'react-numeric-input';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
 import { Grid, Slider, Select, RecordButton, PlayButton, BpmInput } from './controls';
@@ -350,19 +349,8 @@ class App extends Component {
           <Grid {...{ columns, activeColumn }} />
           <PlayButton />
           <RecordButton />
+          <h3 className="control-heading">BPM</h3>
           <BpmInput bpm={120} />
-          <NumericInput min={40} max={240}
-            defaultValue={Transport.bpm.value}
-            onChange={(value) => this.updateBPM(value)}
-          />
-          <div>
-            <h3 className="control-heading">BPM</h3>
-            <label htmlFor="bpm" className="slider">
-              <input type="range" min={40} max={240} name="bpm" defaultValue="120"
-                className="bpm range-slider__range"
-                onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
-            </label>
-          </div>
           <div>
             <div style={{margin: '1rem'}}>
               <a
