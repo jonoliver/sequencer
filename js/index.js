@@ -3,7 +3,7 @@ import Scale, { get, names } from 'music-scale';
 import NumericInput from 'react-numeric-input';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
-import { Grid, Slider, Select, RecordButton, PlayButton, NumberInput } from './controls';
+import { Grid, Slider, Select, RecordButton, PlayButton, BpmInput } from './controls';
 import * as Synth from "./synth";
 import * as Adapters from './adapters';
 import { Transport } from 'tone';
@@ -154,10 +154,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // setInterval(this.tick, 125);
-
     Transport.scheduleRepeat(this.tick, '16n');
-    Transport.start()
   }
 
   tick() {
@@ -353,7 +350,7 @@ class App extends Component {
           <Grid {...{ columns, activeColumn }} />
           <PlayButton />
           <RecordButton />
-          <NumberInput bpm={300} />
+          <BpmInput bpm={120} />
           <NumericInput min={40} max={240}
             defaultValue={Transport.bpm.value}
             onChange={(value) => this.updateBPM(value)}
