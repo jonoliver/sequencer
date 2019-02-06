@@ -5,11 +5,15 @@ import { Provider } from './context';
 import { Grid, Slider, Select } from './controls';
 import { play } from "./instrument";
 import * as Adapters from './adapters';
-import { Transport } from 'tone';
+import Tone, { Transport } from 'tone';
 import patterns from './patterns.json';
 import synths from './synths.json';
-
 const scaleNames = names().sort();
+
+// thanks Chrome :(
+// https://developers.google.com/web/updates/2017/09/autoplay-policy-changes#webaudio
+const resumeAudio = () => Tone.context.resume();
+document.addEventListener('click', resumeAudio, { once: true });
 
 const keys = [
   "A",
