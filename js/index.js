@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Scale, { get, names } from 'music-scale';
 import { cloneDeep } from 'lodash';
 import { Provider } from './context';
-import { Grid, Slider, Select } from './controls';
-import { play } from "./instrument";
+import { Grid, Slider, Select, RecordButton, PlayButton, BpmInput } from './controls';
+import * as Synth from "./synth";
 import * as Adapters from './adapters';
 import Tone, { Transport } from 'tone';
 import patterns from './patterns.json';
@@ -35,7 +35,7 @@ const keys = [
 
 const defaultFilter = {
   type: 'lowpass', // What type of filter is applied.
-  frequency: 400,       // The frequency, in hertz, to which the filter is applied.
+  frequency: 250,       // The frequency, in hertz, to which the filter is applied.
   q: 10,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
   // env       : {          // Filter envelope.
   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
@@ -83,7 +83,42 @@ class App extends Component {
       hold: Adapters.hold(controls.hold),
     }
 
+    const settings = {
+      source: 'sine', // sine, square, triangle, sawtooth
+      volume: 0.25,
+      env,
+      hold: '16n',
+      // filter: defaultFilter,
+      // filter  : {
+      //   type      : 'lowpass', // What type of filter is applied.
+      //   frequency : 400,       // The frequency, in hertz, to which the filter is applied.
+      //   q         : 40,         // Q-factor.  No one knows what this does. The default value is 1. Sensible values are from 0 to 10.
+      //   // env       : {          // Filter envelope.
+      //   //     frequency : 880, // If this is set, filter frequency will slide from filter.frequency to filter.env.frequency when a note is triggered.
+      //   //     attack    : 0.5  // Time in seconds for the filter frequency to slide from filter.frequency to filter.env.frequency
+      //   // }
+      // },
+      // delay: {
+      //   delayTime: .25,  // Time in seconds between each delayed playback.
+      //   wet: .5, // Relative volume change between the original sound and the first delayed playback.
+      //   feedback: .25, // Relative volume change between each delayed playback and the next.
+      // },
+      // vibrato: { // A vibrating pitch effect.  Only works for oscillators.
+      //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+      //   magnitude: 40,      // how much the pitch changes. Sensible values are from 1 to 10.
+      //   speed: 4,      // How quickly the pitch changes, in cycles per second.  Sensible values are from 0.1 to 10.
+      //   attack: 0       // Time in seconds for the vibrato effect to reach peak magnitude.
+      // },
+      // tremolo: { // A vibrating volume effect.
+      //   shape: 'sine', // shape of the lfo waveform. Possible values are 'sine', 'sawtooth', 'square', and 'triangle'.
+      //   magnitude: 0.5,      // how much the volume changes. Sensible values are from 1 to 10.
+      //   speed: 4,      // How quickly the volume changes, in cycles per second.  Sensible values are from 0.1 to 10.
+      //   attack: 0       // Time in seconds for the tremolo effect to reach peak magnitude.
+      // },
+    }
+
     this.state = {
+      settings,
       score: props.score,
       dragging: false,
       activeBeat: 0,
@@ -110,28 +145,26 @@ class App extends Component {
     this.updateBase = this.updateBase.bind(this);
     this.updateScaleName = this.updateScaleName.bind(this);
     this.updateSource = this.updateSource.bind(this);
-    this.UpdateFilterValue = this.UpdateFilterValue.bind(this);
     this.updateFilterType = this.updateFilterType.bind(this);
+    this.updateCutoff = this.updateCutoff.bind(this);
     this.updateQ = this.updateQ.bind(this);
     this.updateBPM = this.updateBPM.bind(this);
+    this.updateNotelength = this.updateNotelength.bind(this);
     this.savePattern = this.savePattern.bind(this);
     this.saveSynth = this.saveSynth.bind(this);
     this.onMouseDown = this.onMouseDown.bind(this);
     this.onMouseUp = this.onMouseUp.bind(this);
   }
 
-  componentWillMount() {
-    // setInterval(this.tick, 125);
-
+  componentDidMount() {
     Transport.scheduleRepeat(this.tick, '16n');
-    Transport.start()
   }
 
   tick() {
     this.setState(({ activeBeat, score, scale }) => {
       const newBeat = activeBeat < score.length - 1 ? activeBeat + 1 : 0;
       const notes = scale.filter((x, i) => score[newBeat][i]);
-      play(notes, this.state.settings);
+      Synth.play(notes, this.state.settings);
 
       return {
         activeBeat: newBeat,
@@ -186,8 +219,7 @@ class App extends Component {
     this.updateScale({ scaleName: value });
   }
 
-
-  UpdateFilterValue(value) {
+  updateCutoff(value){
     const { settings } = this.state;
     if (!settings.filter) return;
     settings.filter.frequency = value;
@@ -214,6 +246,11 @@ class App extends Component {
     if (!settings.filter) return;
     settings.filter.q = value;
     this.setState({ settings, activeSynth: null });
+  }
+
+  updateNotelength({ value }){
+    const { settings } = this.state;
+    this.setState({ settings: { ...settings, hold: value }, activeSynth: null })
   }
 
   savePattern() {
@@ -275,6 +312,7 @@ class App extends Component {
       onMouseDown,
       onMouseUp,
       updateSetting,
+      updateBPM,
     } = this;
 
     const {
@@ -307,19 +345,17 @@ class App extends Component {
     const filterQValue = settings.filter && settings.filter.q ? settings.filter.q : 1;
 
     return (
-      <Provider value={{ toggle }}>
+      <Provider value={{ toggle, updateBPM }}>
         <div className="container" {...{
           onMouseDown,
           onMouseUp,
         }}>
           <Grid {...{ columns, activeColumn }} />
+          <PlayButton />
+          <RecordButton />
+          <h3 className="control-heading">BPM</h3>
+          <BpmInput bpm={120} />
           <div>
-            <h3 className="control-heading">BPM</h3>
-            <label htmlFor="bpm" className="slider">
-              <input type="range" min={40} max={240} name="bpm" defaultValue="120"
-                className="bpm range-slider__range"
-                onChange={(e) => this.updateBPM(parseInt(e.target.value))} />
-            </label>
             <div style={{margin: '1rem'}}>
               <a
                 onClick={this.savePattern}
@@ -349,6 +385,7 @@ class App extends Component {
                 )
               }
             </div>
+
             <div className="controls">
               <section>
                 <h3 className="control-heading">Wave Shape</h3>
@@ -395,7 +432,20 @@ class App extends Component {
                 <Slider name="sustain" value={sustain} min="1" max="100" {...{ updateSetting }} />
                 <Slider name="decay" value={decay} min="1" max="100" {...{ updateSetting }} />
                 <Slider name="release" value={release} min="1" max="100" {...{ updateSetting }} />
-                <Slider name="hold" value={hold} min="0" max="100" {...{ updateSetting }} />
+                <Slider name="hold" value={hold} min="0.1" max="100" {...{ updateSetting }} />
+                <Select
+                  className="select"
+                  classNamePrefix="select"
+                  defaultValue={{ value: '16', label: '16' }}
+                  options={[
+                    { value: '1', label: '1' },
+                    { value: '2', label: '2' },
+                    { value: '4', label: '4' },
+                    { value: '8', label: '8' },
+                    { value: '16', label: '16' },
+                  ]}
+                  onChange={this.updateNotelength}
+                />
 
               </section>
               <section>
@@ -415,7 +465,7 @@ class App extends Component {
                   <input type="range" min={1} max={5000} name="cutoff"
                     value={filterCutoffValue}
                     className="range-slider__range"
-                    onChange={(e) => this.UpdateFilterValue(parseInt(e.target.value))} />
+                    onChange={(e) => this.updateCutoff(parseInt(e.target.value))} />
                   cutoff
                  </label>
                 <label htmlFor="q" className="slider">

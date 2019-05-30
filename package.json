@@ -28,8 +28,10 @@
     "react": "^16.4.0",
     "react-dom": "^16.4.0",
     "react-select": "^2.0.0",
+    "recorderjs": "^1.0.1",
     "tone": "^0.12.80",
-    "web-audio-daw": "^4.2.0"
+    "web-audio-daw": "^4.2.0",
+    "workerify": "^1.1.0"
   },
   "jest": {
     "setupTestFrameworkScriptFile": "<rootDir>/test-setup.js",
